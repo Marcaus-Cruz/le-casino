@@ -1,9 +1,11 @@
+import Table from "./components/Table";
+
 function App() {
   return (
     <>
-      Init
+      <Table />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
