@@ -1,3 +1,5 @@
+@import "./mixins.scss";
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -14,18 +16,9 @@
 }
 
 #table {
+  @include absolute-center();
+  @include backgroundImg("../assets/img/table.png"); 
   width: 100vw;
   height: 100vh;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: auto;
-
-  background-image: url("./assets/img/table.png");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
   background-color: #1f3223;
 }
