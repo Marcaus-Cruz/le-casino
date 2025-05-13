@@ -19,14 +19,27 @@
 
 #table {
    @include absolute-center();
+   @include flex-container();
    @include backgroundImg('../assets/img/table.png');
    width: 100vw;
    height: 100vh;
    background-color: #1f3223;
 }
 
+.players,
 .deck {
-   display: flex;
-   flex-wrap: wrap;
+   flex: 1;
+}
+
+.round-indicator {
+   position: absolute;
+}
+
+.controls {
+   @include flex-container(column, nowrap, space-evenly);
+}
+
+.deck {
+   @include flex-container($wrap: wrap);
    border: 0.5vmin solid magenta;
 }

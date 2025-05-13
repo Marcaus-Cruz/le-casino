@@ -16,7 +16,7 @@ const Card = (props: CardData) => {
    const [altText, setAltText] = useState(isFaceUp ? name : 'Backside of a playing card');
 
    return (
-      <button title={name} className={cardClassName}>
+      <button title={name} className={cardClassName} disabled={!isFaceUp}>
          {<img className={imageClassName} src={imageUrl} alt={altText} />}
       </button>
    );

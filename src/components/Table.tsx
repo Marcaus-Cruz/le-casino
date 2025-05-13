@@ -26,10 +26,6 @@ const dealerDrawCard = (deck: DeckOfCards): CardData => {
 };
 const dealerShuffleDeck = (deck: DeckOfCards): DeckOfCards => shuffleArray(deck);
 
-const playerAddCard = (player: Player, card: CardData): void => {
-   player.dealtCards.push(card);
-};
-
 const tableSetupGame = (players: Player[] = []): TableData => {
    const table: TableData = {
       deck: dealerShuffleDeck(FRESH_DECK),
@@ -47,7 +43,7 @@ const tableSetupGame = (players: Player[] = []): TableData => {
    });
 
    // All Players seated
-   players.forEach((player: Player) => playerEstablishNeighbors(player, table.playerPositions));
+   players.forEach((player: Player) => playerGreetNeighbors(player, table.playerPositions));
 
    return table;
 };
@@ -75,7 +71,11 @@ const tableSetPlayerPosition = (player: Player, position: number): void => {
    player.position = position;
 };
 
-const playerEstablishNeighbors = (me: Player, playerPositions: Record<number, Player>): void => {
+const playerAddCard = (player: Player, card: CardData): void => {
+   player.dealtCards.push(card);
+};
+
+const playerGreetNeighbors = (me: Player, playerPositions: Record<number, Player>): void => {
    const { position: myPosition } = me;
 
    if (myPosition === -1) {
@@ -119,10 +119,17 @@ const Table = () => {
       setRoundIndex(tableData.roundIndex + 1);
    };
 
+   const submitCards = () => {
+      // TODO: Submit cards
+   };
+
    return (
       <div id='table'>
-         <h2>Round: {roundIndex}</h2>
-         <button onClick={startGame}>Start Game</button>
+         <div className='round-indicator'>Round: {roundIndex}</div>
+         <div className='controls'>
+            <button onClick={startGame}>Start Game</button>
+            <button onClick={submitCards}>Submit</button>
+         </div>
          <div className='deck'>
             {currentDeck.map(({ name: cardName, suit, value, imageFront, imageBack, isFaceUp }) => (
                <Card
@@ -139,10 +146,11 @@ const Table = () => {
          <div className='players'>
             {players.map(({ name, role, dealtCards }) => (
                <div key={name} className='player-card'>
-                  <div className='name'>{name}</div>
-                  <div className='role'>Role: {role}</div>
+                  <div className='player-info'>
+                     <div className='name'>{name}</div>
+                     <div className='role'>{role}</div>
+                  </div>
                   <div className='cards'>
-                     Cards:{' '}
                      {dealtCards.map(({ name: cardName, suit, value, imageFront, imageBack }) => (
                         <Card
                            key={cardName}

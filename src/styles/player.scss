@@ -5,7 +5,16 @@
 }
 
 .player-card {
-   color: black;
-   border: 0.5vmin solid #ccc;
-   background-color: #f9f9f9;
+   flex: 1 1 47%;
+   @include flex-container(column, nowrap, center);
+   background-color: rgba(0, 0, 0, 0.2);
+   border: 0.5vmin solid lime;
+
+   .player-info {
+      @include flex-container(row, nowrap, space-evenly, center);
+   }
+
+   .cards {
+      align-self: center;
+   }
 }
