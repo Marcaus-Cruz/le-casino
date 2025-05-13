@@ -109,11 +109,11 @@ const Table = () => {
          <div className='deck'>
             {currentDeck.map(({ key, suit, value, imageFront, imageBack, isFaceUp }) => {
                return (
-                  <div key={key} className={'card deck ' + key}>
+                  <button key={key} className={'card deck ' + key}>
                      {key}
                      {<img className={'image front'} src={imageFront} alt={key} />}
                      {<img className={'image back'} src={imageBack} alt={key} />}
-                  </div>
+                  </button>
                );
             })}
          </div>
@@ -125,11 +125,11 @@ const Table = () => {
                   <div className='cards'>
                      Cards:{' '}
                      {dealtCards.map(({ key, imageFront, imageBack }) => (
-                        <div key={key} className={'card deck ' + key}>
+                        <button key={key} className={'card deck ' + key}>
                            {key}
                            {<img className={'image front'} src={imageFront} alt={key} />}
                            {<img className={'image back'} src={imageBack} alt={key} />}
-                        </div>
+                        </button>
                      ))}
                   </div>
                </div>
