@@ -12,7 +12,7 @@ export interface Player {
    type: PlayerTypes | string;
    dealtCards: Card[];
    hand: Card[];
-   leftNeighbor: Player | null;
-   rightNeighbor: Player | null;
    position: number;
+   leftNeighbor?: Player;
+   rightNeighbor?: Player;
 }
