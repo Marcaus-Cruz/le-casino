@@ -17,4 +17,9 @@
    .cards {
       align-self: center;
    }
+
+   &.current {
+      background-color: transparent;
+      color: red;
+   }
 }
