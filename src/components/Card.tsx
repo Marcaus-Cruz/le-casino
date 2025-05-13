@@ -10,12 +10,14 @@ const Card = (props: CardData) => {
    const [isHovered, setIsHovered] = useState(false);
    const [isDisabled, setIsDisabled] = useState(false);
 
-   console.log(props);
+   const [cardClassName, setCardClassName] = useState(`card ${isFaceUp ? 'face-up' : 'face-down'}`);
+   const [imageClassName, setImageClassName] = useState(`image ${isFaceUp ? 'front' : 'back'}`);
+   const [imageUrl, setImageUrl] = useState(isFaceUp ? imageFront : imageBack);
+   const [altText, setAltText] = useState(isFaceUp ? name : 'Backside of a playing card');
 
    return (
-      <button className={`card ${isFaceUp ? 'face-up' : 'face-down'}`} title={name}>
-         {<img className={'image front'} src={imageFront} alt={name} />}
-         {<img className={'image back'} src={imageBack} alt='Backside of a playing card' />}
+      <button title={name} className={cardClassName}>
+         {<img className={imageClassName} src={imageUrl} alt={altText} />}
       </button>
    );
 };
