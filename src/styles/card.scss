@@ -10,8 +10,11 @@
    position: relative;
    cursor: pointer;
 
-   .image.back {
-      opacity: 0; // Temp
+   &.face-down .image.front {
+      opacity: 0;
+   }
+   &.face-up .image.back {
+      opacity: 0;
    }
 
    .image {

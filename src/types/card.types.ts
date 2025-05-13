@@ -5,7 +5,7 @@ export const VALUES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', '
 export type Value = (typeof VALUES)[number];
 
 export interface Card {
-   key: string;
+   name: string;
    suit: Suit;
    value: Value;
    imageFront: string;
