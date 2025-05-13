@@ -7,4 +7,5 @@ export type Table = {
    pot: number;
    playerPositions: Record<number, Player>;
    players: Player[];
+   currentPlayerIndex: number;
 };

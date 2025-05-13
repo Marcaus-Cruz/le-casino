@@ -1,31 +1,32 @@
 import { useState } from 'react';
 import { shuffleArray } from '../poker/pokerUtils';
-import type { Card, DeckOfCards } from '../types/card.types';
+import type { Card as CardData, DeckOfCards } from '../types/card.types';
 import { SUITS, VALUES } from '../types/card.types';
 import type { Player } from '../types/player.types';
 import type { Table as TableData } from '../types/table.types';
 import { DEFAULT_PLAYERS } from './Player.tsx';
+import Card, { BACKSIDE_IMAGE } from './Card.tsx';
 
-export const FRESH_DECK: DeckOfCards = SUITS.flatMap(suit =>
+const FRESH_DECK: DeckOfCards = SUITS.flatMap(suit =>
    VALUES.map(value => ({
       suit,
       value,
-      key: `${value}_${suit}`,
+      name: `${value}_${suit}`,
       imageFront: `/src/assets/img/cards/${suit}_${value}.png`,
-      imageBack: `/src/assets/img/cards/back_light.png`,
+      imageBack: BACKSIDE_IMAGE,
       isFaceUp: false,
    })),
 );
 
 // * Dealer
-const dealerDrawCard = (deck: DeckOfCards): Card => {
+const dealerDrawCard = (deck: DeckOfCards): CardData => {
    const card = deck.pop();
    if (!card) throw new Error('Deck is empty');
    return card;
 };
 const dealerShuffleDeck = (deck: DeckOfCards): DeckOfCards => shuffleArray(deck);
 
-const playerAddCard = (player: Player, card: Card): void => {
+const playerAddCard = (player: Player, card: CardData): void => {
    player.dealtCards.push(card);
 };
 
@@ -36,17 +37,33 @@ const tableSetupGame = (players: Player[] = []): TableData => {
       pot: 0,
       players,
       playerPositions: {},
+      currentPlayerIndex: -1,
    };
 
    players.forEach((player: Player, index: number) => {
       table.playerPositions[index] = player;
       tableSetPlayerPosition(player, index);
+      tableSetInitialRole(player);
    });
 
    // All Players seated
    players.forEach((player: Player) => playerEstablishNeighbors(player, table.playerPositions));
 
    return table;
+};
+
+const tableSetInitialRole = (player: Player): void => {
+   const { position } = player;
+
+   if (position === 0) {
+      player.role = 'dealer';
+   } else if (position === 1) {
+      player.role = 'big-blind';
+   } else if (position === 2) {
+      player.role = 'small-blind';
+   } else {
+      player.role = 'regular';
+   }
 };
 
 const tableSetPlayerPosition = (player: Player, position: number): void => {
@@ -107,29 +124,35 @@ const Table = () => {
          <h2>Round: {roundIndex}</h2>
          <button onClick={startGame}>Start Game</button>
          <div className='deck'>
-            {currentDeck.map(({ key, suit, value, imageFront, imageBack, isFaceUp }) => {
-               return (
-                  <button key={key} className={'card deck ' + key}>
-                     {key}
-                     {<img className={'image front'} src={imageFront} alt={key} />}
-                     {<img className={'image back'} src={imageBack} alt={key} />}
-                  </button>
-               );
-            })}
+            {currentDeck.map(({ name: cardName, suit, value, imageFront, imageBack, isFaceUp }) => (
+               <Card
+                  key={cardName}
+                  name={cardName}
+                  suit={suit}
+                  value={value}
+                  imageFront={imageFront}
+                  imageBack={imageBack}
+                  isFaceUp={isFaceUp}
+               />
+            ))}
          </div>
          <div className='players'>
-            {players.map(({ name, type, dealtCards }, index) => (
+            {players.map(({ name, role, dealtCards }) => (
                <div key={name} className='player-card'>
                   <div className='name'>{name}</div>
-                  <div className='role'>Role: {type}</div>
+                  <div className='role'>Role: {role}</div>
                   <div className='cards'>
                      Cards:{' '}
-                     {dealtCards.map(({ key, imageFront, imageBack }) => (
-                        <button key={key} className={'card deck ' + key}>
-                           {key}
-                           {<img className={'image front'} src={imageFront} alt={key} />}
-                           {<img className={'image back'} src={imageBack} alt={key} />}
-                        </button>
+                     {dealtCards.map(({ name: cardName, suit, value, imageFront, imageBack }) => (
+                        <Card
+                           key={cardName}
+                           name={cardName}
+                           suit={suit}
+                           value={value}
+                           imageFront={imageFront}
+                           imageBack={imageBack}
+                           isFaceUp={true} // ! debugging
+                        />
                      ))}
                   </div>
                </div>
