@@ -15,44 +15,46 @@ export const DECK: DeckOfCards = SUITS.flatMap(suit =>
    })),
 );
 
-const DEFAULT_PLAYERS: Player[] = [
-   {
-      name: 'Player1',
-      type: 'dealer',
-      dealtCards: [],
-      hand: [],
-      leftNeighbor: null,
-      rightNeighbor: null,
-      position: 0,
-   },
-   {
-      name: 'Player2',
-      type: 'small-blind',
-      dealtCards: [],
-      hand: [],
-      leftNeighbor: null,
-      rightNeighbor: null,
-      position: 1,
-   },
-   {
-      name: 'Player3',
-      type: 'big-blind',
-      dealtCards: [],
-      hand: [],
-      leftNeighbor: null,
-      rightNeighbor: null,
-      position: 2,
-   },
-   {
-      name: 'Player4',
-      type: 'regular',
-      dealtCards: [],
-      hand: [],
-      leftNeighbor: null,
-      rightNeighbor: null,
-      position: 3,
-   },
-];
+const PLAYER_ONE: Player = {
+   name: 'Player1',
+   type: 'dealer',
+   dealtCards: [],
+   hand: [],
+   leftNeighbor: null,
+   rightNeighbor: null,
+   position: 0,
+};
+const PLAYER_TWO: Player = {
+   name: 'Player2',
+   type: 'small-blind',
+   dealtCards: [],
+   hand: [],
+   leftNeighbor: null,
+   rightNeighbor: null,
+   position: 1,
+};
+const PLAYER_THREE: Player = {
+   name: 'Player3',
+   type: 'big-blind',
+   dealtCards: [],
+   hand: [],
+   leftNeighbor: null,
+   rightNeighbor: null,
+   position: 2,
+};
+const PLAYER_FOUR: Player = {
+   name: 'Player4',
+   type: 'regular',
+   dealtCards: [],
+   hand: [],
+   leftNeighbor: null,
+   rightNeighbor: null,
+   position: 3,
+};
+
+const DEFAULT_PLAYERS: Player[] = [PLAYER_ONE, PLAYER_TWO, PLAYER_THREE, PLAYER_FOUR];
+
+// TODO: Implement Draw function.
 
 const Table = () => {
    const [round, setRound] = useState(0);
