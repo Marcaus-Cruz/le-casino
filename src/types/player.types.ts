@@ -9,9 +9,10 @@ export type PlayerTypes = {
 
 export interface Player {
    name: string;
-   type: PlayerTypes;
+   type: PlayerTypes | string;
    dealtCards: Card[];
    hand: Card[];
-   leftNeighbor: Player;
-   rightNeighbor: Player;
+   leftNeighbor: Player | null;
+   rightNeighbor: Player | null;
+   position: number;
 }

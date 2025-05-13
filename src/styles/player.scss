@@ -1,0 +1,11 @@
+.players {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 1em;
+}
+
+.player-card {
+   color: black;
+   border: 0.5vmin solid #ccc;
+   background-color: #f9f9f9;
+}
