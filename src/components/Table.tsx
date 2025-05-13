@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import type { Player } from '../types/player.types';
-import type { DeckOfCards } from '../types/card.types';
-import { SUITS, VALUES } from '../types/card.types';
 import { shuffleArray } from '../poker/pokerUtils';
+import type { Card, DeckOfCards } from '../types/card.types';
+import { SUITS, VALUES } from '../types/card.types';
+import type { Player } from '../types/player.types';
+import type { Table as TableData } from '../types/table.types';
+import { DEFAULT_PLAYERS } from './Player.tsx';
 
-export const DECK: DeckOfCards = SUITS.flatMap(suit =>
+export const FRESH_DECK: DeckOfCards = SUITS.flatMap(suit =>
    VALUES.map(value => ({
       suit,
       value,
@@ -15,75 +17,94 @@ export const DECK: DeckOfCards = SUITS.flatMap(suit =>
    })),
 );
 
-const PLAYER_ONE: Player = {
-   name: 'Player1',
-   type: 'dealer',
-   dealtCards: [],
-   hand: [],
-   leftNeighbor: null,
-   rightNeighbor: null,
-   position: 0,
+// * Dealer
+const dealerDrawCard = (deck: DeckOfCards): Card => {
+   const card = deck.pop();
+   if (!card) throw new Error('Deck is empty');
+   return card;
 };
-const PLAYER_TWO: Player = {
-   name: 'Player2',
-   type: 'small-blind',
-   dealtCards: [],
-   hand: [],
-   leftNeighbor: null,
-   rightNeighbor: null,
-   position: 1,
-};
-const PLAYER_THREE: Player = {
-   name: 'Player3',
-   type: 'big-blind',
-   dealtCards: [],
-   hand: [],
-   leftNeighbor: null,
-   rightNeighbor: null,
-   position: 2,
-};
-const PLAYER_FOUR: Player = {
-   name: 'Player4',
-   type: 'regular',
-   dealtCards: [],
-   hand: [],
-   leftNeighbor: null,
-   rightNeighbor: null,
-   position: 3,
+const dealerShuffleDeck = (deck: DeckOfCards): DeckOfCards => shuffleArray(deck);
+
+const playerAddCard = (player: Player, card: Card): void => {
+   player.dealtCards.push(card);
 };
 
-const DEFAULT_PLAYERS: Player[] = [PLAYER_ONE, PLAYER_TWO, PLAYER_THREE, PLAYER_FOUR];
+const tableSetupGame = (players: Player[] = []): TableData => {
+   const table: TableData = {
+      deck: dealerShuffleDeck(FRESH_DECK),
+      roundIndex: 0,
+      pot: 0,
+      players,
+      playerPositions: {},
+   };
 
-// TODO: Implement Draw function.
+   players.forEach((player: Player, index: number) => {
+      table.playerPositions[index] = player;
+      tableSetPlayerPosition(player, index);
+   });
+
+   // All Players seated
+   players.forEach((player: Player) => playerEstablishNeighbors(player, table.playerPositions));
+
+   return table;
+};
+
+const tableSetPlayerPosition = (player: Player, position: number): void => {
+   if (!player || position === -1) {
+      console.warn('Invalid player or position', { player, position });
+      return;
+   }
+
+   player.position = position;
+};
+
+const playerEstablishNeighbors = (me: Player, playerPositions: Record<number, Player>): void => {
+   const { position: myPosition } = me;
+
+   if (myPosition === -1) {
+      console.warn('Player is not seated at the table');
+      return;
+   }
+
+   const lastPosition = Object.keys(playerPositions).length - 1;
+
+   me.rightNeighbor =
+      myPosition === 0 ? playerPositions[lastPosition] : playerPositions[myPosition - 1];
+   me.leftNeighbor =
+      myPosition === lastPosition ? playerPositions[0] : playerPositions[myPosition + 1];
+};
+
+const dealCards = (deck: DeckOfCards, players: Player[], numCardsToDeal: number = 5): void => {
+   // TODO: Have better dealing strat
+   let cardsDealtCounter = players.length * numCardsToDeal;
+
+   while (cardsDealtCounter > 0) {
+      players.forEach(player => {
+         if (cardsDealtCounter === 0) return;
+
+         playerAddCard(player, dealerDrawCard(deck));
+         cardsDealtCounter--;
+      });
+   }
+};
 
 const Table = () => {
-   const [round, setRound] = useState(0);
-   const [players, setPlayers] = useState<Player[]>(DEFAULT_PLAYERS);
-   const [currentDeck, setCurrentDeck] = useState(DECK);
+   const [tableData, setTableData] = useState<TableData>(tableSetupGame(DEFAULT_PLAYERS));
+   const [roundIndex, setRoundIndex] = useState<number>(tableData.roundIndex);
+   const [players, setPlayers] = useState<Player[]>(tableData.players);
+   const [currentDeck, setCurrentDeck] = useState<DeckOfCards>(tableData.deck);
 
    const startGame = () => {
-      const shuffledDeck = shuffleArray(currentDeck);
-      const newPlayers = [...players];
+      dealCards(tableData.deck, tableData.players);
 
-      // TODO: Have better dealing strat
-      let cardsDealtCounter = newPlayers.length * 5;
-      while (cardsDealtCounter > 0) {
-         newPlayers.forEach(player => {
-            if (cardsDealtCounter === 0) return;
-
-            player.dealtCards.push(shuffledDeck.pop());
-            cardsDealtCounter--;
-         });
-      }
-
-      setCurrentDeck(shuffledDeck);
-      setPlayers(newPlayers);
-      setRound(prev => prev + 1);
+      setCurrentDeck(tableData.deck);
+      setPlayers(tableData.players);
+      setRoundIndex(tableData.roundIndex + 1);
    };
 
    return (
       <div id='table'>
-         <h2>Round: {round}</h2>
+         <h2>Round: {roundIndex}</h2>
          <button onClick={startGame}>Start Game</button>
          <div className='deck'>
             {currentDeck.map(({ key, suit, value, imageFront, imageBack, isFaceUp }) => {
