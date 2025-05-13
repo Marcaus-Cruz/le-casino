@@ -1,35 +1,35 @@
-import type { Player } from '../types/player.types';
+import type { Player as PlayerData } from '../types/player.types';
 
-const PLAYER_ONE: Player = {
+const PLAYER_ONE: PlayerData = {
    name: 'Player1',
-   type: 'regular',
+   role: 'regular',
    dealtCards: [],
    hand: [],
    leftNeighbor: undefined,
    rightNeighbor: undefined,
    position: -1,
 };
-const PLAYER_TWO: Player = {
+const PLAYER_TWO: PlayerData = {
    name: 'Player2',
-   type: 'regular',
+   role: 'regular',
    dealtCards: [],
    hand: [],
    leftNeighbor: undefined,
    rightNeighbor: undefined,
    position: -1,
 };
-const PLAYER_THREE: Player = {
+const PLAYER_THREE: PlayerData = {
    name: 'Player3',
-   type: 'regular',
+   role: 'regular',
    dealtCards: [],
    hand: [],
    leftNeighbor: undefined,
    rightNeighbor: undefined,
    position: -1,
 };
-const PLAYER_FOUR: Player = {
+const PLAYER_FOUR: PlayerData = {
    name: 'Player4',
-   type: 'regular',
+   role: 'regular',
    dealtCards: [],
    hand: [],
    leftNeighbor: undefined,
@@ -37,6 +37,6 @@ const PLAYER_FOUR: Player = {
    position: -1,
 };
 
-const DEFAULT_PLAYERS: Player[] = [PLAYER_ONE, PLAYER_TWO, PLAYER_THREE, PLAYER_FOUR];
+const DEFAULT_PLAYERS: PlayerData[] = [PLAYER_ONE, PLAYER_TWO, PLAYER_THREE, PLAYER_FOUR];
 
 export { PLAYER_ONE, PLAYER_TWO, PLAYER_THREE, PLAYER_FOUR, DEFAULT_PLAYERS };

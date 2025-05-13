@@ -1,15 +1,10 @@
 import type { Card } from './card.types';
 
-export type PlayerTypes = {
-   dealer: 'dealer';
-   bigBlind: 'big-blind';
-   smallBlind: 'small-blind';
-   regular: 'regular';
-};
+export type PlayerRoles = 'dealer' | 'big-blind' | 'small-blind' | 'regular';
 
 export interface Player {
    name: string;
-   type: PlayerTypes | string;
+   role: PlayerRoles;
    dealtCards: Card[];
    hand: Card[];
    position: number;
