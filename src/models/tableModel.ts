@@ -3,6 +3,7 @@ import type { CardData, DeckOfCardsData } from '../types/card.types';
 import { SUITS, VALUES } from '../types/card.types';
 import type { PlayerData } from '../types/player.types.ts';
 import type { TableData } from '../types/table.types';
+import { playerAddCard, playerGreetNeighbors } from './playerModel.ts';
 
 export const createFreshDeck = (): DeckOfCardsData =>
    SUITS.flatMap(suit =>
@@ -16,10 +17,14 @@ export const createFreshDeck = (): DeckOfCardsData =>
       })),
    );
 
-export const dealerDrawCard = (deck: DeckOfCardsData): CardData => {
+export const drawCard = (deck: DeckOfCardsData): CardData => {
    const card = deck.pop();
    if (!card) throw new Error('Deck is empty');
    return card;
+};
+
+export const addToDiscardPile = (table: TableData, card: CardData): void => {
+   table.discardPile.push(card);
 };
 
 export const dealerShuffleDeck = (deck: DeckOfCardsData): DeckOfCardsData => shuffleArray(deck);
@@ -27,6 +32,7 @@ export const dealerShuffleDeck = (deck: DeckOfCardsData): DeckOfCardsData => shu
 export const tableSetupGame = (players: PlayerData[] = []): TableData => {
    const table: TableData = {
       deck: dealerShuffleDeck(createFreshDeck()),
+      discardPile: [],
       roundIndex: 0,
       pot: 0,
       players,
@@ -69,25 +75,6 @@ export const tableSetPlayerPosition = (player: PlayerData, position: number): vo
    player.position = position;
 };
 
-export const playerGreetNeighbors = (
-   me: PlayerData,
-   playerPositions: Record<number, PlayerData>,
-): void => {
-   const { position: myPosition } = me;
-
-   if (myPosition === -1) {
-      console.warn('Player is not seated at the table');
-      return;
-   }
-
-   const lastPosition = Object.keys(playerPositions).length - 1;
-
-   me.rightNeighbor =
-      myPosition === 0 ? playerPositions[lastPosition] : playerPositions[myPosition - 1];
-   me.leftNeighbor =
-      myPosition === lastPosition ? playerPositions[0] : playerPositions[myPosition + 1];
-};
-
 export const dealCards = (
    deck: DeckOfCardsData,
    players: PlayerData[],
@@ -99,12 +86,9 @@ export const dealCards = (
       players.forEach(player => {
          if (cardsDealtCounter === 0) return;
 
-         playerAddCard(player, dealerDrawCard(deck));
+         playerAddCard(player, drawCard(deck));
          cardsDealtCounter--;
       });
    }
 };
 
-export const playerAddCard = (player: PlayerData, card: CardData): void => {
-   player.dealtCards.push(card);
-};

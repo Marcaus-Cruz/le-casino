@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { DEFAULT_PLAYERS } from '../models/playerModel.ts';
 import { dealCards, tableSetupGame } from '../models/tableModel.ts';
-import type { DeckOfCardsData } from '../types/card.types';
+import type { CardData, DeckOfCardsData } from '../types/card.types';
 import type { PlayerData } from '../types/player.types';
 import type { TableData } from '../types/table.types';
 import Card from './Card.tsx';
@@ -45,6 +45,11 @@ const Table = () => {
       // TODO: Submit cards
    };
 
+   const discardHandler = (cards: CardData[]): void => {
+      tableData.discardPile.push(...cards);
+      console.log({ tableData });
+   };
+
    return (
       <div id='table'>
          <div className='round-indicator'>Round: {roundIndex}</div>
@@ -73,6 +78,7 @@ const Table = () => {
                   key={playerData.name}
                   {...playerData}
                   currentPlayerIndex={currentPlayerIndex}
+                  onDiscard={discardHandler}
                />
             ))}
          </div>
@@ -81,3 +87,17 @@ const Table = () => {
 };
 
 export default Table;
+
+// const betHandler = () => {};
+// const callHandler = () => {};
+// const raiseHandler = () => {};
+// const foldHandler = () => {};
+// const checkHandler = () => {};
+// const allInHandler = () => {};
+
+// onBet={betHandler}
+// onCall={callHandler}
+// onRaise={raiseHandler}
+// onFold={foldHandler}
+// onCheck={checkHandler}
+// onAllIn={allInHandler}

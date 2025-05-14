@@ -1,15 +1,32 @@
+import { useState, type MouseEvent } from 'react';
 import type { CardData } from '../types/card.types';
 
 export const BACKSIDE_IMAGE = '/src/assets/img/cards/back_light.png';
 
-const Card = (props: CardData) => {
+type CardProps = CardData & {
+   onCardSelected?: (selectedCard: string) => void;
+   // onCardSelected?: (selectedCard: CardData) => void;
+};
+
+const Card = (props: CardProps) => {
    const { name, imageFront, imageBack, isFaceUp } = props;
+   const { onCardSelected: doCardSelected } = props;
+
+   const [isSelected, setIsSelected] = useState(false);
+
+   const select = (event: MouseEvent<HTMLButtonElement>) => {
+      console.log(`[Card][select]`, { event, props, isSelected });
+      setIsSelected(prev => !prev);
+
+      doCardSelected?.(name);
+   };
 
    return (
       <button
          title={name}
-         className={`card ${isFaceUp ? 'face-up' : 'face-down'}`}
+         className={`card ${isFaceUp ? 'face-up' : 'face-down'} ${isSelected ? 'selected' : ''}`}
          disabled={!isFaceUp}
+         onClick={select}
       >
          {
             <img
