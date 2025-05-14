@@ -21,6 +21,7 @@ const Player = (props: PlayerProps) => {
    }, [currentPlayerIndex, position]);
 
    const discard = () => {
+      setSelectedCards([]);
       doDiscard(selectedCards, position);
    };
 
@@ -69,7 +70,11 @@ const Player = (props: PlayerProps) => {
                />
             ))}
          </div>
-         <button onClick={discard}>Discard</button>
+         {isCurrentPlayer && (
+            <button onClick={discard} className='btn btn-discard' disabled={!selectedCards.length}>
+               Discard
+            </button>
+         )}
       </div>
    );
 };

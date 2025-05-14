@@ -18,6 +18,14 @@
       align-self: center;
    }
 
+   .btn.btn-discard {
+      cursor: pointer;
+
+      &:disabled {
+         cursor: not-allowed;
+      }
+   }
+
    &.current {
       background-color: transparent;
       color: red;
