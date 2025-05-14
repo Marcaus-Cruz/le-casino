@@ -5,7 +5,7 @@ import type { CardData } from '../types/card.types';
 
 type PlayerProps = PlayerData & {
    currentPlayerIndex: number;
-   onDiscard: (cards: CardData[]) => void;
+   onDiscard: (cards: CardData[], position: number) => void;
 };
 
 const Player = (props: PlayerProps) => {
@@ -21,7 +21,7 @@ const Player = (props: PlayerProps) => {
    }, [currentPlayerIndex, position]);
 
    const discard = () => {
-      doDiscard();
+      doDiscard(selectedCards, position);
    };
 
    const cardSelectedHandler = (selectedCardName: string) => {

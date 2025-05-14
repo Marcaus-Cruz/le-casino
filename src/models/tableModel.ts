@@ -3,7 +3,7 @@ import type { CardData, DeckOfCardsData } from '../types/card.types';
 import { SUITS, VALUES } from '../types/card.types';
 import type { PlayerData } from '../types/player.types.ts';
 import type { TableData } from '../types/table.types';
-import { playerAddCard, playerGreetNeighbors } from './playerModel.ts';
+import { addToHand, greetNeighbors } from './playerModel.ts';
 
 export const createFreshDeck = (): DeckOfCardsData =>
    SUITS.flatMap(suit =>
@@ -47,7 +47,7 @@ export const tableSetupGame = (players: PlayerData[] = []): TableData => {
    });
 
    // All Players seated
-   players.forEach((player: PlayerData) => playerGreetNeighbors(player, table.playerPositions));
+   players.forEach((player: PlayerData) => greetNeighbors(player, table.playerPositions));
 
    return table;
 };
@@ -86,7 +86,7 @@ export const dealCards = (
       players.forEach(player => {
          if (cardsDealtCounter === 0) return;
 
-         playerAddCard(player, drawCard(deck));
+         addToHand(player, drawCard(deck));
          cardsDealtCounter--;
       });
    }

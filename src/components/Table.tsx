@@ -1,6 +1,10 @@
 import { useState } from 'react';
-import { DEFAULT_PLAYERS } from '../models/playerModel.ts';
-import { dealCards, tableSetupGame } from '../models/tableModel.ts';
+import {
+   DEFAULT_PLAYERS,
+   addToHand as playerAddToHand,
+   removeFromHand as playerRemoveFromHand,
+} from '../models/playerModel.ts';
+import { dealCards, drawCard, tableSetupGame } from '../models/tableModel.ts';
 import type { CardData, DeckOfCardsData } from '../types/card.types';
 import type { PlayerData } from '../types/player.types';
 import type { TableData } from '../types/table.types';
@@ -12,6 +16,7 @@ const Table = () => {
    const [roundIndex, setRoundIndex] = useState<number>(tableData.roundIndex);
    const [players, setPlayers] = useState<PlayerData[]>(tableData.players);
    const [currentDeck, setCurrentDeck] = useState<DeckOfCardsData>(tableData.deck);
+   const [currentDiscardPile, setCurrentDiscardPile] = useState<CardData[]>(tableData.discardPile);
    const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(
       tableData.currentPlayerIndex,
    );
@@ -45,9 +50,18 @@ const Table = () => {
       // TODO: Submit cards
    };
 
-   const discardHandler = (cards: CardData[]): void => {
-      tableData.discardPile.push(...cards);
-      console.log({ tableData });
+   const discardHandler = (cards: CardData[], playerPosition: number): void => {
+      console.log('[Table][discardHandler]', { cards });
+
+      const player = tableData.playerPositions[playerPosition];
+      const numCardsToGiveBack = cards.length;
+
+      setCurrentDiscardPile(prevDiscardPile => [...prevDiscardPile, ...cards]);
+      cards.forEach(card => playerRemoveFromHand(player, card));
+
+      for (let i = 0; i < numCardsToGiveBack; i += 1) {
+         playerAddToHand(player, drawCard(tableData.deck));
+      }
    };
 
    return (
@@ -60,16 +74,14 @@ const Table = () => {
             <button onClick={submitCards}>Submit</button>
          </div>
          <div className='deck'>
-            {currentDeck.map(({ name: cardName, suit, value, imageFront, imageBack, isFaceUp }) => (
-               <Card
-                  key={cardName}
-                  name={cardName}
-                  suit={suit}
-                  value={value}
-                  imageFront={imageFront}
-                  imageBack={imageBack}
-                  isFaceUp={isFaceUp}
-               />
+            {currentDeck.map(card => (
+               <Card key={card.name} {...card} />
+            ))}
+         </div>
+         <div className='discard-pile'>
+            <h2>Discard Pile</h2>
+            {currentDiscardPile.map((card: CardData) => (
+               <Card key={card.name} {...card} />
             ))}
          </div>
          <div className='players'>

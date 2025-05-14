@@ -40,7 +40,7 @@ const PLAYER_FOUR: PlayerData = {
 
 const DEFAULT_PLAYERS: PlayerData[] = [PLAYER_ONE, PLAYER_TWO, PLAYER_THREE, PLAYER_FOUR];
 
-export const playerGreetNeighbors = (
+export const greetNeighbors = (
    me: PlayerData,
    playerPositions: Record<number, PlayerData>,
 ): void => {
@@ -59,9 +59,12 @@ export const playerGreetNeighbors = (
       myPosition === lastPosition ? playerPositions[0] : playerPositions[myPosition + 1];
 };
 
-export const playerAddCard = (player: PlayerData, card: CardData): void => {
+export const addToHand = (player: PlayerData, card: CardData): void => {
    player.dealtCards.push(card);
 };
 
-export { DEFAULT_PLAYERS, PLAYER_FOUR, PLAYER_ONE, PLAYER_THREE, PLAYER_TWO };
+export const removeFromHand = (player: PlayerData, card: CardData): void => {
+   player.dealtCards = player.dealtCards.filter(keptCard => keptCard.name !== card.name);
+};
 
+export { DEFAULT_PLAYERS, PLAYER_FOUR, PLAYER_ONE, PLAYER_THREE, PLAYER_TWO };
