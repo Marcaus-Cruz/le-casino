@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { shuffleArray } from '../poker/pokerUtils';
+import { shuffleArray } from '../poker/utilities.ts';
 import type { Card as CardData, DeckOfCards } from '../types/card.types';
 import { SUITS, VALUES } from '../types/card.types';
 import type { Player } from '../types/player.types';
 import type { Table as TableData } from '../types/table.types';
-import { DEFAULT_PLAYERS } from './Player.tsx';
 import Card, { BACKSIDE_IMAGE } from './Card.tsx';
+import { DEFAULT_PLAYERS } from './Player.tsx';
 
 const FRESH_DECK: DeckOfCards = SUITS.flatMap(suit =>
    VALUES.map(value => ({
