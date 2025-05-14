@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import { DEFAULT_PLAYERS } from '../models/playerModel.ts';
 import { dealCards, tableSetupGame } from '../models/tableModel.ts';
 import type { DeckOfCards } from '../types/card.types';
 import type { Player as PlayerData } from '../types/player.types';
 import type { Table as TableData } from '../types/table.types';
 import Card from './Card.tsx';
-import Player, { DEFAULT_PLAYERS } from './Player.tsx';
+import Player from './Player.tsx';
 
 const Table = () => {
    const [tableData, setTableData] = useState<TableData>(tableSetupGame(DEFAULT_PLAYERS));

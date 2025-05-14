@@ -1,57 +1,21 @@
+import { useEffect, useState } from 'react';
 import type { Player as PlayerData } from '../types/player.types';
 import Card from './Card';
 
-const PLAYER_ONE: PlayerData = {
-   name: 'Player1',
-   role: 'regular',
-   dealtCards: [],
-   hand: [],
-   leftNeighbor: undefined,
-   rightNeighbor: undefined,
-   position: -1,
-};
-const PLAYER_TWO: PlayerData = {
-   name: 'Player2',
-   role: 'regular',
-   dealtCards: [],
-   hand: [],
-   leftNeighbor: undefined,
-   rightNeighbor: undefined,
-   position: -1,
-};
-const PLAYER_THREE: PlayerData = {
-   name: 'Player3',
-   role: 'regular',
-   dealtCards: [],
-   hand: [],
-   leftNeighbor: undefined,
-   rightNeighbor: undefined,
-   position: -1,
-};
-const PLAYER_FOUR: PlayerData = {
-   name: 'Player4',
-   role: 'regular',
-   dealtCards: [],
-   hand: [],
-   leftNeighbor: undefined,
-   rightNeighbor: undefined,
-   position: -1,
-};
-
-const DEFAULT_PLAYERS: PlayerData[] = [PLAYER_ONE, PLAYER_TWO, PLAYER_THREE, PLAYER_FOUR];
-
-export { PLAYER_ONE, PLAYER_TWO, PLAYER_THREE, PLAYER_FOUR, DEFAULT_PLAYERS };
-
-type PlayerProps = PlayerData & { currentPlayerIndex: number}
+type PlayerProps = PlayerData & { currentPlayerIndex: number };
 
 const Player = (props: PlayerProps) => {
    const { name, role, dealtCards, position, currentPlayerIndex } = props;
 
+   const [isCurrentPlayer, setIsCurrentPlayer] = useState(position === currentPlayerIndex);
+
+   // * Playing with useEffect
+   useEffect(() => {
+      setIsCurrentPlayer(position === currentPlayerIndex);
+   }, [currentPlayerIndex, position]);
+
    return (
-      <div
-         key={name}
-         className={`player-card ${role} ${position === currentPlayerIndex ? 'current' : ''}`}
-      >
+      <div key={name} className={`player-card ${role} ${isCurrentPlayer ? 'current' : ''}`}>
          <div className='player-info'>
             <div className='name'>{name}</div>
             <div className='role'>{role}</div>
@@ -65,7 +29,8 @@ const Player = (props: PlayerProps) => {
                   value={value}
                   imageFront={imageFront}
                   imageBack={imageBack}
-                  isFaceUp={true} // ! debugging
+                  isFaceUp={isCurrentPlayer}
+                  // isFaceUp={position === currentPlayerIndex}
                />
             ))}
          </div>
