@@ -1,11 +1,11 @@
-import type { DeckOfCards } from './card.types';
-import type { Player } from './player.types';
+import type { DeckOfCardsData } from './card.types';
+import type { PlayerData } from './player.types';
 
-export type Table = {
-   deck: DeckOfCards;
+export type TableData = {
+   deck: DeckOfCardsData;
    roundIndex: number;
    pot: number;
-   playerPositions: Record<number, Player>;
-   players: Player[];
+   playerPositions: Record<number, PlayerData>;
+   players: PlayerData[];
    currentPlayerIndex: number;
 };

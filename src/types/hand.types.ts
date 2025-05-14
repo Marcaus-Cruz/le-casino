@@ -1,4 +1,4 @@
-import type { Card } from './card.types';
+import type { CardData } from './card.types';
 
 export type HandName =
    | 'High-Card'
@@ -12,9 +12,9 @@ export type HandName =
    | 'Straight-Flush'
    | 'Royal-Flush';
 
-export type Hand = {
+export type HandData = {
    name: HandName;
-   cards: Card[];
+   cards: CardData[];
    handRank: number;
    relativeRank: number;
 };

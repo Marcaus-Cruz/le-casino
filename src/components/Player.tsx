@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { Player as PlayerData } from '../types/player.types';
+import type { PlayerData } from '../types/player.types';
 import Card from './Card';
 
 type PlayerProps = PlayerData & { currentPlayerIndex: number };

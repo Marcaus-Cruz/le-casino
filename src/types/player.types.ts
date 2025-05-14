@@ -1,13 +1,13 @@
-import type { Card } from './card.types';
+import type { CardData } from './card.types';
 
 export type PlayerRoles = 'dealer' | 'big-blind' | 'small-blind' | 'regular';
 
-export interface Player {
+export interface PlayerData {
    name: string;
    role: PlayerRoles;
-   dealtCards: Card[];
-   hand: Card[];
+   dealtCards: CardData[];
+   hand: CardData[];
    position: number;
-   leftNeighbor?: Player;
-   rightNeighbor?: Player;
+   leftNeighbor?: PlayerData;
+   rightNeighbor?: PlayerData;
 }

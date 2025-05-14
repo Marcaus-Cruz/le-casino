@@ -1,10 +1,10 @@
-import { SUITS, VALUES } from '../types/card.types';
-import type { Player as PlayerData } from '../types/player.types.ts';
-import type { DeckOfCards, Card as CardData } from '../types/card.types';
 import { shuffleArray } from '../poker/utilities.ts';
-import type { Table as TableData } from '../types/table.types';
+import type { CardData, DeckOfCardsData } from '../types/card.types';
+import { SUITS, VALUES } from '../types/card.types';
+import type { PlayerData } from '../types/player.types.ts';
+import type { TableData } from '../types/table.types';
 
-export const createFreshDeck = (): DeckOfCards =>
+export const createFreshDeck = (): DeckOfCardsData =>
    SUITS.flatMap(suit =>
       VALUES.map(value => ({
          suit,
@@ -16,13 +16,13 @@ export const createFreshDeck = (): DeckOfCards =>
       })),
    );
 
-export const dealerDrawCard = (deck: DeckOfCards): CardData => {
+export const dealerDrawCard = (deck: DeckOfCardsData): CardData => {
    const card = deck.pop();
    if (!card) throw new Error('Deck is empty');
    return card;
 };
 
-export const dealerShuffleDeck = (deck: DeckOfCards): DeckOfCards => shuffleArray(deck);
+export const dealerShuffleDeck = (deck: DeckOfCardsData): DeckOfCardsData => shuffleArray(deck);
 
 export const tableSetupGame = (players: PlayerData[] = []): TableData => {
    const table: TableData = {
@@ -89,7 +89,7 @@ export const playerGreetNeighbors = (
 };
 
 export const dealCards = (
-   deck: DeckOfCards,
+   deck: DeckOfCardsData,
    players: PlayerData[],
    numCardsToDeal: number = 5,
 ): void => {

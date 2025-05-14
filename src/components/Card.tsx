@@ -1,4 +1,4 @@
-import type { Card as CardData } from '../types/card.types';
+import type { CardData } from '../types/card.types';
 
 export const BACKSIDE_IMAGE = '/src/assets/img/cards/back_light.png';
 

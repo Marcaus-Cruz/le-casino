@@ -1,4 +1,4 @@
-import type { Player as PlayerData } from '../types/player.types';
+import type { PlayerData } from '../types/player.types';
 
 const PLAYER_ONE: PlayerData = {
    name: 'Player1',

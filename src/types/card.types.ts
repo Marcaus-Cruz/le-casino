@@ -4,7 +4,7 @@ export type Suit = (typeof SUITS)[number];
 export const VALUES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'] as const;
 export type Value = (typeof VALUES)[number];
 
-export interface Card {
+export interface CardData {
    name: string;
    suit: Suit;
    value: Value;
@@ -13,4 +13,4 @@ export interface Card {
    isFaceUp: boolean;
 }
 
-export type DeckOfCards = Card[];
+export type DeckOfCardsData = CardData[];

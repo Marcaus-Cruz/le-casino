@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { DEFAULT_PLAYERS } from '../models/playerModel.ts';
 import { dealCards, tableSetupGame } from '../models/tableModel.ts';
-import type { DeckOfCards } from '../types/card.types';
-import type { Player as PlayerData } from '../types/player.types';
-import type { Table as TableData } from '../types/table.types';
+import type { DeckOfCardsData } from '../types/card.types';
+import type { PlayerData } from '../types/player.types';
+import type { TableData } from '../types/table.types';
 import Card from './Card.tsx';
 import Player from './Player.tsx';
 
@@ -11,7 +11,7 @@ const Table = () => {
    const [tableData, setTableData] = useState<TableData>(tableSetupGame(DEFAULT_PLAYERS));
    const [roundIndex, setRoundIndex] = useState<number>(tableData.roundIndex);
    const [players, setPlayers] = useState<PlayerData[]>(tableData.players);
-   const [currentDeck, setCurrentDeck] = useState<DeckOfCards>(tableData.deck);
+   const [currentDeck, setCurrentDeck] = useState<DeckOfCardsData>(tableData.deck);
    const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(
       tableData.currentPlayerIndex,
    );
