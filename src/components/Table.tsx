@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { shuffleArray } from '../poker/utilities.ts';
 import type { Card as CardData, DeckOfCards } from '../types/card.types';
 import { SUITS, VALUES } from '../types/card.types';
-import type { Player } from '../types/player.types';
+import type { Player as PlayerData } from '../types/player.types';
 import type { Table as TableData } from '../types/table.types';
 import Card, { BACKSIDE_IMAGE } from './Card.tsx';
-import { DEFAULT_PLAYERS } from './Player.tsx';
+import Player, { DEFAULT_PLAYERS } from './Player.tsx';
 
 const FRESH_DECK: DeckOfCards = SUITS.flatMap(suit =>
    VALUES.map(value => ({
@@ -26,7 +26,7 @@ const dealerDrawCard = (deck: DeckOfCards): CardData => {
 };
 const dealerShuffleDeck = (deck: DeckOfCards): DeckOfCards => shuffleArray(deck);
 
-const tableSetupGame = (players: Player[] = []): TableData => {
+const tableSetupGame = (players: PlayerData[] = []): TableData => {
    const table: TableData = {
       deck: dealerShuffleDeck(FRESH_DECK),
       roundIndex: 0,
@@ -36,19 +36,19 @@ const tableSetupGame = (players: Player[] = []): TableData => {
       currentPlayerIndex: -1,
    };
 
-   players.forEach((player: Player, index: number) => {
+   players.forEach((player: PlayerData, index: number) => {
       table.playerPositions[index] = player;
       tableSetPlayerPosition(player, index);
       tableSetInitialRole(player);
    });
 
    // All Players seated
-   players.forEach((player: Player) => playerGreetNeighbors(player, table.playerPositions));
+   players.forEach((player: PlayerData) => playerGreetNeighbors(player, table.playerPositions));
 
    return table;
 };
 
-const tableSetInitialRole = (player: Player): void => {
+const tableSetInitialRole = (player: PlayerData): void => {
    const { position } = player;
 
    if (position === 0) {
@@ -62,7 +62,7 @@ const tableSetInitialRole = (player: Player): void => {
    }
 };
 
-const tableSetPlayerPosition = (player: Player, position: number): void => {
+const tableSetPlayerPosition = (player: PlayerData, position: number): void => {
    if (!player || position === -1) {
       console.warn('Invalid player or position', { player, position });
       return;
@@ -71,11 +71,14 @@ const tableSetPlayerPosition = (player: Player, position: number): void => {
    player.position = position;
 };
 
-const playerAddCard = (player: Player, card: CardData): void => {
+const playerAddCard = (player: PlayerData, card: CardData): void => {
    player.dealtCards.push(card);
 };
 
-const playerGreetNeighbors = (me: Player, playerPositions: Record<number, Player>): void => {
+const playerGreetNeighbors = (
+   me: PlayerData,
+   playerPositions: Record<number, PlayerData>,
+): void => {
    const { position: myPosition } = me;
 
    if (myPosition === -1) {
@@ -91,7 +94,7 @@ const playerGreetNeighbors = (me: Player, playerPositions: Record<number, Player
       myPosition === lastPosition ? playerPositions[0] : playerPositions[myPosition + 1];
 };
 
-const dealCards = (deck: DeckOfCards, players: Player[], numCardsToDeal: number = 5): void => {
+const dealCards = (deck: DeckOfCards, players: PlayerData[], numCardsToDeal: number = 5): void => {
    // TODO: Have better dealing strat
    let cardsDealtCounter = players.length * numCardsToDeal;
 
@@ -108,12 +111,12 @@ const dealCards = (deck: DeckOfCards, players: Player[], numCardsToDeal: number 
 const Table = () => {
    const [tableData, setTableData] = useState<TableData>(tableSetupGame(DEFAULT_PLAYERS));
    const [roundIndex, setRoundIndex] = useState<number>(tableData.roundIndex);
-   const [players, setPlayers] = useState<Player[]>(tableData.players);
+   const [players, setPlayers] = useState<PlayerData[]>(tableData.players);
    const [currentDeck, setCurrentDeck] = useState<DeckOfCards>(tableData.deck);
    const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(
       tableData.currentPlayerIndex,
    );
-   const [currentPlayer, setCurrentPlayer] = useState<Player>(
+   const [currentPlayer, setCurrentPlayer] = useState<PlayerData>(
       tableData.playerPositions[currentPlayerIndex],
    );
 
@@ -166,29 +169,8 @@ const Table = () => {
             ))}
          </div>
          <div className='players'>
-            {players.map(({ name, role, dealtCards, position }) => (
-               <div
-                  key={name}
-                  className={`player-card ${role} ${position === currentPlayerIndex ? 'current' : ''}`}
-               >
-                  <div className='player-info'>
-                     <div className='name'>{name}</div>
-                     <div className='role'>{role}</div>
-                  </div>
-                  <div className='cards'>
-                     {dealtCards.map(({ name: cardName, suit, value, imageFront, imageBack }) => (
-                        <Card
-                           key={cardName}
-                           name={cardName}
-                           suit={suit}
-                           value={value}
-                           imageFront={imageFront}
-                           imageBack={imageBack}
-                           isFaceUp={true} // ! debugging
-                        />
-                     ))}
-                  </div>
-               </div>
+            {players.map((playerData: PlayerData) => (
+               <Player key={playerData.name} {...playerData} />
             ))}
          </div>
       </div>
