@@ -42,14 +42,15 @@ const DEFAULT_PLAYERS: PlayerData[] = [PLAYER_ONE, PLAYER_TWO, PLAYER_THREE, PLA
 
 export { PLAYER_ONE, PLAYER_TWO, PLAYER_THREE, PLAYER_FOUR, DEFAULT_PLAYERS };
 
-const Player = (props: PlayerData) => {
-   const { name, role, dealtCards } = props;
+type PlayerProps = PlayerData & { currentPlayerIndex: number}
+
+const Player = (props: PlayerProps) => {
+   const { name, role, dealtCards, position, currentPlayerIndex } = props;
 
    return (
       <div
          key={name}
-         // className={`player-card ${role} ${position === currentPlayerIndex ? 'current' : ''}`}
-         className={`player-card ${role}`}
+         className={`player-card ${role} ${position === currentPlayerIndex ? 'current' : ''}`}
       >
          <div className='player-info'>
             <div className='name'>{name}</div>

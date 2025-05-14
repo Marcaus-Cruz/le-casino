@@ -68,7 +68,11 @@ const Table = () => {
          </div>
          <div className='players'>
             {players.map((playerData: PlayerData) => (
-               <Player key={playerData.name} {...playerData} />
+               <Player
+                  key={playerData.name}
+                  {...playerData}
+                  currentPlayerIndex={currentPlayerIndex}
+               />
             ))}
          </div>
       </div>
