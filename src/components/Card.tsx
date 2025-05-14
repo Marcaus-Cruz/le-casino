@@ -5,7 +5,6 @@ export const BACKSIDE_IMAGE = '/src/assets/img/cards/back_light.png';
 
 type CardProps = CardData & {
    onCardSelected?: (selectedCard: string) => void;
-   // onCardSelected?: (selectedCard: CardData) => void;
 };
 
 const Card = (props: CardProps) => {

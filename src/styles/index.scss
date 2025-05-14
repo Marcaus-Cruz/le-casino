@@ -26,6 +26,26 @@
    background-color: #1f3223;
 }
 
+.discard-pile {
+   @include flex-container(column, wrap);
+}
+
+.debug {
+   .deck {
+      border: 0.5vmin solid magenta;
+   }
+
+   .card {
+      &:not(.selected) {
+         border: 0.5vmin dotted magenta;
+      }
+   }
+
+   .player-card {
+      border: 0.5vmin solid lime;
+   }
+}
+
 .players,
 .deck {
    flex: 1;
@@ -41,5 +61,4 @@
 
 .deck {
    @include flex-container($wrap: wrap);
-   border: 0.5vmin solid magenta;
 }

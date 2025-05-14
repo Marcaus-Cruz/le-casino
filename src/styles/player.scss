@@ -8,7 +8,7 @@
    flex: 1 1 47%;
    @include flex-container(column, nowrap, center);
    background-color: rgba(0, 0, 0, 0.2);
-   border: 0.5vmin solid lime;
+   border: 0.5vmin solid transparent;
 
    .player-info {
       @include flex-container(row, nowrap, space-evenly, center);

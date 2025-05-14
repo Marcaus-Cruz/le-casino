@@ -5,6 +5,7 @@ import {
    removeFromHand as playerRemoveFromHand,
 } from '../models/playerModel.ts';
 import { dealCards, drawCard, tableSetupGame } from '../models/tableModel.ts';
+import { isDebug } from '../poker/utilities.ts';
 import type { CardData, DeckOfCardsData } from '../types/card.types';
 import type { PlayerData } from '../types/player.types';
 import type { TableData } from '../types/table.types';
@@ -12,6 +13,8 @@ import Card from './Card.tsx';
 import Player from './Player.tsx';
 
 const Table = () => {
+   const [allPlayersCompleted, setAllPlayersCompleted] = useState<boolean>(false);
+
    const [tableData, setTableData] = useState<TableData>(tableSetupGame(DEFAULT_PLAYERS));
    const [roundIndex, setRoundIndex] = useState<number>(tableData.roundIndex);
    const [players, setPlayers] = useState<PlayerData[]>(tableData.players);
@@ -65,10 +68,10 @@ const Table = () => {
    };
 
    return (
-      <div id='table'>
+      <div id='table' className={`${isDebug() ? 'debug' : ''}`}>
          <div className='round-indicator'>Round: {roundIndex}</div>
          <div className='controls'>
-            <button onClick={startGame}>Start Game</button>
+            {roundIndex === 0 && <button onClick={startGame}>Start Game</button>}
             <button onClick={() => changePlayer(-1)}>Previous Player</button>
             <button onClick={() => changePlayer(1)}>Next Player</button>
             <button onClick={submitCards}>Submit</button>
@@ -78,12 +81,14 @@ const Table = () => {
                <Card key={card.name} {...card} />
             ))}
          </div>
-         <div className='discard-pile'>
-            <h2>Discard Pile</h2>
-            {currentDiscardPile.map((card: CardData) => (
-               <Card key={card.name} {...card} />
-            ))}
-         </div>
+         {isDebug() && (
+            <div className='discard-pile'>
+               Discard Pile
+               {currentDiscardPile.map((card: CardData) => (
+                  <Card key={card.name} {...card} />
+               ))}
+            </div>
+         )}
          <div className='players'>
             {players.map((playerData: PlayerData) => (
                <Player

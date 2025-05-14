@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
+import { isDebug } from '../poker/utilities';
+import type { CardData } from '../types/card.types';
 import type { PlayerData } from '../types/player.types';
 import Card from './Card';
-import type { CardData } from '../types/card.types';
 
 type PlayerProps = PlayerData & {
    currentPlayerIndex: number;
@@ -12,7 +13,7 @@ const Player = (props: PlayerProps) => {
    const { name, role, dealtCards, position, currentPlayerIndex } = props;
    const { onDiscard: doDiscard } = props;
 
-   const [isCurrentPlayer, setIsCurrentPlayer] = useState(position === currentPlayerIndex);
+   const [isCurrentPlayer, setIsCurrentPlayer] = useState<boolean>(position === currentPlayerIndex);
    const [selectedCards, setSelectedCards] = useState<CardData[]>([]);
 
    // * Playing with useEffect
@@ -20,7 +21,7 @@ const Player = (props: PlayerProps) => {
       setIsCurrentPlayer(position === currentPlayerIndex);
    }, [currentPlayerIndex, position]);
 
-   const discard = () => {
+   const discard = (): void => {
       setSelectedCards([]);
       doDiscard(selectedCards, position);
    };
@@ -48,13 +49,15 @@ const Player = (props: PlayerProps) => {
             <div className='name'>{name}</div>
             <div className='role'>{role}</div>
          </div>
-         <div className='selected-cards debug'>
-            {selectedCards.map(({ name }) => (
-               <div key={name} className='selected-card-name'>
-                  {name}
-               </div>
-            ))}
-         </div>
+         {isDebug() && (
+            <div className='selected-cards debug'>
+               {selectedCards.map(({ name }) => (
+                  <div key={name} className='selected-card-name'>
+                     {name}
+                  </div>
+               ))}
+            </div>
+         )}
          <div className='cards'>
             {dealtCards.map(({ name: cardName, suit, value, imageFront, imageBack }) => (
                <Card
@@ -65,7 +68,6 @@ const Player = (props: PlayerProps) => {
                   imageFront={imageFront}
                   imageBack={imageBack}
                   isFaceUp={isCurrentPlayer}
-                  // isFaceUp={position === currentPlayerIndex}
                   onCardSelected={cardSelectedHandler}
                />
             ))}
