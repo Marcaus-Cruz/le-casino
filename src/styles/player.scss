@@ -28,7 +28,8 @@
       align-self: center;
    }
 
-   .btn.btn-discard {
+   .btn {
+      margin: auto;
       cursor: pointer;
 
       &:disabled {

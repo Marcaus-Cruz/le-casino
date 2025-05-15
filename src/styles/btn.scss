@@ -1,0 +1,23 @@
+.btn {
+   background: unset;
+   padding: 0.5em 1em;
+   border: 0.5vmin solid white;
+   color: white;
+   border-radius: 0.5em;
+
+   cursor: pointer;
+
+   &:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+   }
+
+   &:not(:disabled) {
+      &:hover,
+      &:focus,
+      &:active {
+         background-color: white;
+         color: black;
+      }
+   }
+}
