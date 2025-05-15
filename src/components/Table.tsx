@@ -4,7 +4,7 @@ import {
    addToHand as playerAddToHand,
    removeFromHand as playerRemoveFromHand,
 } from '../models/playerModel.ts';
-import { dealCards, drawCard, tableSetupGame } from '../models/tableModel.ts';
+import { dealCards, drawCard, tableSetupGame, tableChangePlayer } from '../models/tableModel.ts';
 import { isDebug } from '../poker/utilities.ts';
 import type { CardData, DeckOfCardsData } from '../types/card.types';
 import type { PlayerData } from '../types/player.types';
@@ -14,7 +14,8 @@ import Player from './Player.tsx';
 import type { GamePhase } from '../types/table.types';
 
 const Table = () => {
-   const [tableData, setTableData] = useState<TableData>(tableSetupGame(DEFAULT_PLAYERS));
+   const tableData: TableData = tableSetupGame(DEFAULT_PLAYERS);
+
    const [gamePhase, setGamePhase] = useState<GamePhase>(tableData.stage);
    const [roundIndex, setRoundIndex] = useState<number>(tableData.roundIndex);
    const [players, setPlayers] = useState<PlayerData[]>(tableData.players);
@@ -22,9 +23,6 @@ const Table = () => {
    const [currentDiscardPile, setCurrentDiscardPile] = useState<CardData[]>(tableData.discardPile);
    const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(
       tableData.currentPlayerIndex,
-   );
-   const [currentPlayer, setCurrentPlayer] = useState<PlayerData>(
-      tableData.playerPositions[currentPlayerIndex],
    );
 
    const [hasPlayerDiscarded, setHasPlayerDiscarded] = useState<Record<number, boolean>>(
@@ -97,7 +95,7 @@ const Table = () => {
    };
 
    return (
-      <div id='table' className={`${isDebug() ? 'debug' : ''}`}>
+      <div id='table' className={`${gamePhase} ${isDebug() ? 'debug' : ''}`}>
          <div className='round-indicator'>
             Round: {roundIndex} {gamePhase}
          </div>
@@ -108,10 +106,18 @@ const Table = () => {
                   Start Game
                </button>
             )}
-            <button className='btn' onClick={() => changePlayer(-1)}>
+            <button
+               className='btn'
+               onClick={() => changePlayer(-1)}
+               disabled={gamePhase === 'ready-for-showdown'}
+            >
                Previous Player
             </button>
-            <button className='btn' onClick={() => changePlayer(1)}>
+            <button
+               className='btn'
+               onClick={() => changePlayer(1)}
+               disabled={gamePhase === 'ready-for-showdown'}
+            >
                Next Player
             </button>
             <button
@@ -119,7 +125,7 @@ const Table = () => {
                onClick={submitCards}
                disabled={gamePhase !== 'ready-for-showdown'}
             >
-               Submit
+               Showdown
             </button>
          </div>
          <div className='deck-container'>
@@ -143,6 +149,7 @@ const Table = () => {
                   key={playerData.name}
                   {...playerData}
                   currentPlayerIndex={currentPlayerIndex}
+                  gamePhase={gamePhase}
                   onDiscard={discardHandler}
                />
             ))}

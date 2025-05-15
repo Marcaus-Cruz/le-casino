@@ -3,14 +3,16 @@ import { isDebug } from '../poker/utilities';
 import type { CardData } from '../types/card.types';
 import type { PlayerData } from '../types/player.types';
 import Card from './Card';
+import type { GamePhase } from '../types/table.types';
 
 type PlayerProps = PlayerData & {
    currentPlayerIndex: number;
+   gamePhase: GamePhase;
    onDiscard: (cards: CardData[], position: number) => void;
 };
 
 const Player = (props: PlayerProps) => {
-   const { name, role, dealtCards, position, currentPlayerIndex } = props;
+   const { name, role, dealtCards, position, currentPlayerIndex, gamePhase } = props;
    const { onDiscard: doDiscard } = props;
 
    const [isCurrentPlayer, setIsCurrentPlayer] = useState<boolean>(position === currentPlayerIndex);
@@ -44,7 +46,10 @@ const Player = (props: PlayerProps) => {
    };
 
    return (
-      <div key={name} className={`player-card ${role} ${isCurrentPlayer ? 'current' : ''}`}>
+      <div
+         key={name}
+         className={`player-card ${role} ${isCurrentPlayer && !['ready-for-showdown', 'showdown'].includes(gamePhase) ? 'current' : ''}`}
+      >
          <div className='player-info'>
             <div className='name'>{name}</div>
             <div className='role'>{role}</div>
@@ -67,12 +72,15 @@ const Player = (props: PlayerProps) => {
                   value={value}
                   imageFront={imageFront}
                   imageBack={imageBack}
-                  isFaceUp={isCurrentPlayer}
+                  isFaceUp={
+                     (isCurrentPlayer && 'ready-for-showdown' !== gamePhase) ||
+                     'showdown' === gamePhase
+                  }
                   onCardSelected={cardSelectedHandler}
                />
             ))}
          </div>
-         {isCurrentPlayer && (
+         {isCurrentPlayer && !['showdown', 'ready-for-showdown'].includes(gamePhase) && (
             <button onClick={discard} className='btn'>
                {`${selectedCards.length ? 'Discard' : 'Skip'}`}
             </button>

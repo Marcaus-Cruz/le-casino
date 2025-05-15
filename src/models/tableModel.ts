@@ -93,3 +93,19 @@ export const dealCards = (
    }
 };
 
+export const tableChangePlayer = (table: TableData, iterator: number): number => {
+   const firstPlayerIndex = 0;
+   const lastPlayerIndex = table.players.length - 1;
+
+   if (table.currentPlayerIndex === lastPlayerIndex && iterator > 0) {
+      return firstPlayerIndex;
+   }
+
+   if (table.currentPlayerIndex === 0 && iterator < 0) {
+      return lastPlayerIndex;
+   }
+   console.log('new currentIndex', table.currentPlayerIndex, iterator);
+
+   table.currentPlayerIndex += iterator;
+   return table.currentPlayerIndex;
+};
