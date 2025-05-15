@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
    DEFAULT_PLAYERS,
    addToHand as playerAddToHand,
@@ -11,11 +11,11 @@ import type { PlayerData } from '../types/player.types';
 import type { TableData } from '../types/table.types';
 import Card from './Card.tsx';
 import Player from './Player.tsx';
+import type { GamePhase } from '../types/table.types';
 
 const Table = () => {
-   const [allPlayersCompleted, setAllPlayersCompleted] = useState<boolean>(false);
-
    const [tableData, setTableData] = useState<TableData>(tableSetupGame(DEFAULT_PLAYERS));
+   const [gamePhase, setGamePhase] = useState<GamePhase>(tableData.stage);
    const [roundIndex, setRoundIndex] = useState<number>(tableData.roundIndex);
    const [players, setPlayers] = useState<PlayerData[]>(tableData.players);
    const [currentDeck, setCurrentDeck] = useState<DeckOfCardsData>(tableData.deck);
@@ -27,12 +27,33 @@ const Table = () => {
       tableData.playerPositions[currentPlayerIndex],
    );
 
+   const [hasPlayerDiscarded, setHasPlayerDiscarded] = useState<Record<number, boolean>>(
+      players.reduce(
+         (obj, { position }) => {
+            obj[position] = false;
+            return obj;
+         },
+         {} as Record<number, boolean>,
+      ),
+   );
+
+   useEffect(() => {
+      if (Object.values(hasPlayerDiscarded).every(value => value)) {
+         setGamePhase('ready-for-showdown');
+      }
+   }, [hasPlayerDiscarded]);
+
+   // TODO: Make Model have the source truth
    const startGame = () => {
       dealCards(tableData.deck, tableData.players);
 
       setCurrentDeck(tableData.deck);
       setPlayers(tableData.players);
       setRoundIndex(tableData.roundIndex + 1);
+
+      // setGamePhase('betting');
+      setGamePhase('discarding');
+
       setCurrentPlayerIndex(prevPlayerIndex => prevPlayerIndex + 1);
    };
 
@@ -51,6 +72,7 @@ const Table = () => {
 
    const submitCards = () => {
       // TODO: Submit cards
+      setGamePhase('showdown');
    };
 
    const discardHandler = (cards: CardData[], playerPosition: number): void => {
@@ -65,16 +87,40 @@ const Table = () => {
       for (let i = 0; i < numCardsToGiveBack; i += 1) {
          playerAddToHand(player, drawCard(tableData.deck));
       }
+
+      setHasPlayerDiscarded(prevHasPlayerDiscarded => ({
+         ...prevHasPlayerDiscarded,
+         [playerPosition]: true,
+      }));
+
+      changePlayer(1);
    };
 
    return (
       <div id='table' className={`${isDebug() ? 'debug' : ''}`}>
-         <div className='round-indicator'>Round: {roundIndex}</div>
+         <div className='round-indicator'>
+            Round: {roundIndex} {gamePhase}
+         </div>
          <div className='controls'>
-            {roundIndex === 0 && <button onClick={startGame}>Start Game</button>}
-            <button onClick={() => changePlayer(-1)}>Previous Player</button>
-            <button onClick={() => changePlayer(1)}>Next Player</button>
-            <button onClick={submitCards}>Submit</button>
+            {/* TODO: create a Button component */}
+            {roundIndex === 0 && (
+               <button className='btn' onClick={startGame}>
+                  Start Game
+               </button>
+            )}
+            <button className='btn' onClick={() => changePlayer(-1)}>
+               Previous Player
+            </button>
+            <button className='btn' onClick={() => changePlayer(1)}>
+               Next Player
+            </button>
+            <button
+               className='btn'
+               onClick={submitCards}
+               disabled={gamePhase !== 'ready-for-showdown'}
+            >
+               Submit
+            </button>
          </div>
          <div className='deck'>
             {currentDeck.map(card => (

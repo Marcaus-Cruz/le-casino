@@ -3,7 +3,7 @@ import type { PlayerData } from './player.types';
 
 export type GameType = 'draw-five' | 'texas-hold-em' | 'omaha';
 
-export type GamePhase = 'setup' | 'betting' | 'discarding' | 'showdown';
+export type GamePhase = 'setup' | 'betting' | 'discarding' | 'ready-for-showdown' | 'showdown';
 
 export type TableData = {
    deck: DeckOfCardsData;
@@ -13,4 +13,5 @@ export type TableData = {
    playerPositions: Record<number, PlayerData>;
    players: PlayerData[];
    currentPlayerIndex: number;
+   stage: GamePhase;
 };

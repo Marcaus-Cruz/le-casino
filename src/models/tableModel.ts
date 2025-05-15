@@ -38,6 +38,7 @@ export const tableSetupGame = (players: PlayerData[] = []): TableData => {
       players,
       playerPositions: {},
       currentPlayerIndex: -1,
+      stage: 'setup',
    };
 
    players.forEach((player: PlayerData, index: number) => {

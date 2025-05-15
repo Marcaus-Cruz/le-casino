@@ -73,8 +73,8 @@ const Player = (props: PlayerProps) => {
             ))}
          </div>
          {isCurrentPlayer && (
-            <button onClick={discard} className='btn btn-discard' disabled={!selectedCards.length}>
-               Discard
+            <button onClick={discard} className='btn'>
+               {`${selectedCards.length ? 'Discard' : 'Skip'}`}
             </button>
          )}
       </div>
