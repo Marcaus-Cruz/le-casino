@@ -1,31 +1,28 @@
 import { useEffect, useState } from 'react';
-import {
-   DEFAULT_PLAYERS,
-   addToHand as playerAddToHand,
-   removeFromHand as playerRemoveFromHand,
-} from '../models/playerModel.ts';
-import { dealCards, drawCard, tableSetupGame } from '../models/tableModel.ts';
+import PlayerModel, { DEFAULT_PLAYERS } from '../models/playerModel.ts';
+import TableModel from '../models/tableModel.ts';
 import { isDebug } from '../poker/utilities.ts';
 import type { CardData, DeckOfCardsData } from '../types/card.types';
-import type { PlayerData } from '../types/player.types';
-import type { TableData } from '../types/table.types';
+import type { GamePhase } from '../types/table.types';
 import Card from './Card.tsx';
 import Player from './Player.tsx';
-import type { GamePhase } from '../types/table.types';
 
 const Table = () => {
-   const [tableData, setTableData] = useState<TableData>(tableSetupGame(DEFAULT_PLAYERS));
-   const [gamePhase, setGamePhase] = useState<GamePhase>(tableData.stage);
-   const [roundIndex, setRoundIndex] = useState<number>(tableData.roundIndex);
-   const [players, setPlayers] = useState<PlayerData[]>(tableData.players);
-   const [currentDeck, setCurrentDeck] = useState<DeckOfCardsData>(tableData.deck);
-   const [currentDiscardPile, setCurrentDiscardPile] = useState<CardData[]>(tableData.discardPile);
+   const [gamePhase, setGamePhase] = useState<GamePhase>(TableModel.stage);
+   const [roundIndex, setRoundIndex] = useState<number>(TableModel.roundIndex);
+   const [players, setPlayers] = useState<PlayerModel[]>(TableModel.players);
+   const [currentDeck, setCurrentDeck] = useState<DeckOfCardsData>(TableModel.deck);
+   const [currentDiscardPile, setCurrentDiscardPile] = useState<CardData[]>(TableModel.discardPile);
    const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(
-      tableData.currentPlayerIndex,
+      TableModel.currentPlayerIndex,
    );
-   const [currentPlayer, setCurrentPlayer] = useState<PlayerData>(
-      tableData.playerPositions[currentPlayerIndex],
-   );
+
+   // run it only once, after the first render:
+   useEffect(() => {
+      TableModel.setupGame(DEFAULT_PLAYERS);
+      // if you really need to log it:
+      console.log(TableModel);
+   }, []);
 
    const [hasPlayerDiscarded, setHasPlayerDiscarded] = useState<Record<number, boolean>>(
       players.reduce(
@@ -45,16 +42,16 @@ const Table = () => {
 
    // TODO: Make Model have the source truth
    const startGame = () => {
-      dealCards(tableData.deck, tableData.players);
+      TableModel.dealCards();
 
-      setCurrentDeck(tableData.deck);
-      setPlayers(tableData.players);
-      setRoundIndex(tableData.roundIndex + 1);
+      setCurrentDeck(TableModel.deck);
+      setPlayers(TableModel.players);
+      setRoundIndex(TableModel.roundIndex);
 
       // setGamePhase('betting');
       setGamePhase('discarding');
 
-      setCurrentPlayerIndex(prevPlayerIndex => prevPlayerIndex + 1);
+      setCurrentPlayerIndex(TableModel.currentPlayerIndex);
    };
 
    const changePlayer = (iterator: number): void => {
@@ -78,14 +75,14 @@ const Table = () => {
    const discardHandler = (cards: CardData[], playerPosition: number): void => {
       console.log('[Table][discardHandler]', { cards });
 
-      const player = tableData.playerPositions[playerPosition];
+      const player = TableModel.playerPositions[playerPosition];
       const numCardsToGiveBack = cards.length;
 
-      setCurrentDiscardPile(prevDiscardPile => [...prevDiscardPile, ...cards]);
-      cards.forEach(card => playerRemoveFromHand(player, card));
+      setCurrentDiscardPile(TableModel.addToDiscardPile(cards));
+      cards.forEach(card => player.removeFromHand(card));
 
       for (let i = 0; i < numCardsToGiveBack; i += 1) {
-         playerAddToHand(player, drawCard(tableData.deck));
+         player.addToHand(TableModel.drawCard());
       }
 
       setHasPlayerDiscarded(prevHasPlayerDiscarded => ({
@@ -103,7 +100,7 @@ const Table = () => {
          </div>
          <div className='controls'>
             {/* TODO: create a Button component */}
-            {roundIndex === 0 && (
+            {roundIndex <= 0 && (
                <button className='btn' onClick={startGame}>
                   Start Game
                </button>
@@ -136,7 +133,7 @@ const Table = () => {
             </div>
          )}
          <div className='players'>
-            {players.map((playerData: PlayerData) => (
+            {players.map((playerData: PlayerModel) => (
                <Player
                   key={playerData.name}
                   {...playerData}

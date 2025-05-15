@@ -1,70 +1,79 @@
 import type { CardData } from '../types/card.types';
-import type { PlayerData } from '../types/player.types';
+import type { PlayerData, PlayerRoles } from '../types/player.types';
+import TableModel from './tableModel';
 
-const PLAYER_ONE: PlayerData = {
-   name: 'Player1',
+const STARTING_PLAYER_DATA: PlayerData = Object.freeze({
+   name: '',
    role: 'regular',
    dealtCards: [],
    hand: [],
    leftNeighbor: undefined,
    rightNeighbor: undefined,
    position: -1,
-};
-const PLAYER_TWO: PlayerData = {
-   name: 'Player2',
-   role: 'regular',
-   dealtCards: [],
-   hand: [],
-   leftNeighbor: undefined,
-   rightNeighbor: undefined,
-   position: -1,
-};
-const PLAYER_THREE: PlayerData = {
-   name: 'Player3',
-   role: 'regular',
-   dealtCards: [],
-   hand: [],
-   leftNeighbor: undefined,
-   rightNeighbor: undefined,
-   position: -1,
-};
-const PLAYER_FOUR: PlayerData = {
-   name: 'Player4',
-   role: 'regular',
-   dealtCards: [],
-   hand: [],
-   leftNeighbor: undefined,
-   rightNeighbor: undefined,
-   position: -1,
-};
+});
 
+const PLAYER_ONE: PlayerData = Object.freeze({ ...STARTING_PLAYER_DATA, name: 'Player1' });
+const PLAYER_TWO: PlayerData = Object.freeze({ ...STARTING_PLAYER_DATA, name: 'Player2' });
+const PLAYER_THREE: PlayerData = Object.freeze({ ...STARTING_PLAYER_DATA, name: 'Player3' });
+const PLAYER_FOUR: PlayerData = Object.freeze({ ...STARTING_PLAYER_DATA, name: 'Player4' });
 const DEFAULT_PLAYERS: PlayerData[] = [PLAYER_ONE, PLAYER_TWO, PLAYER_THREE, PLAYER_FOUR];
 
-export const greetNeighbors = (
-   me: PlayerData,
-   playerPositions: Record<number, PlayerData>,
-): void => {
-   const { position: myPosition } = me;
+export { DEFAULT_PLAYERS };
 
-   if (myPosition === -1) {
-      console.warn('Player is not seated at the table');
-      return;
+export default class PlayerModel {
+   // TODO: Make DRY
+   name: string = '';
+   role: PlayerRoles = 'regular';
+   dealtCards: CardData[] = [];
+   hand: CardData[] = [];
+   leftNeighbor: PlayerModel | undefined = undefined;
+   rightNeighbor: PlayerModel | undefined = undefined;
+   position: number = -1;
+
+   /**
+    *
+    */
+   constructor(options: PlayerData) {
+      console.log(`[${PlayerModel.name}][constructor]`, { options });
+
+      Object.assign(this, STARTING_PLAYER_DATA, options);
    }
 
-   const lastPosition = Object.keys(playerPositions).length - 1;
+   greetNeighbors(): void {
+      console.log(`[${PlayerModel.name}][${this.greetNeighbors.name}]`);
 
-   me.rightNeighbor =
-      myPosition === 0 ? playerPositions[lastPosition] : playerPositions[myPosition - 1];
-   me.leftNeighbor =
-      myPosition === lastPosition ? playerPositions[0] : playerPositions[myPosition + 1];
-};
+      const { position: myPosition } = this;
 
-export const addToHand = (player: PlayerData, card: CardData): void => {
-   player.dealtCards.push(card);
-};
+      if (myPosition === -1) {
+         console.warn('Player is not seated at the table');
+         return;
+      }
 
-export const removeFromHand = (player: PlayerData, card: CardData): void => {
-   player.dealtCards = player.dealtCards.filter(keptCard => keptCard.name !== card.name);
-};
+      const lastPosition = Object.keys(TableModel.playerPositions).length - 1;
 
-export { DEFAULT_PLAYERS, PLAYER_FOUR, PLAYER_ONE, PLAYER_THREE, PLAYER_TWO };
+      this.rightNeighbor =
+         myPosition === 0
+            ? TableModel.playerPositions[lastPosition]
+            : TableModel.playerPositions[myPosition - 1];
+      this.leftNeighbor =
+         myPosition === lastPosition
+            ? TableModel.playerPositions[0]
+            : TableModel.playerPositions[myPosition + 1];
+   }
+
+   addToHand(card: CardData): CardData[] {
+      console.debug(`[${PlayerModel.name}][${this.addToHand.name}]`, { card });
+
+      this.dealtCards.push(card);
+
+      return this.dealtCards;
+   }
+
+   removeFromHand(card: CardData): CardData[] {
+      console.debug(`[${PlayerModel.name}][${this.removeFromHand.name}]`, { card });
+
+      this.dealtCards = this.dealtCards.filter(keptCard => keptCard.name !== card.name);
+
+      return this.dealtCards;
+   }
+}
