@@ -1,44 +1,22 @@
 import type { CardData } from '../types/card.types';
 import type { PlayerData } from '../types/player.types';
 
-const PLAYER_ONE: PlayerData = {
-   name: 'Player1',
+const INITIAL_PLAYER_DATA: PlayerData = Object.freeze({
+   name: '',
    role: 'regular',
    dealtCards: [],
-   hand: [],
+   hand: undefined,
    leftNeighbor: undefined,
    rightNeighbor: undefined,
    position: -1,
-};
-const PLAYER_TWO: PlayerData = {
-   name: 'Player2',
-   role: 'regular',
-   dealtCards: [],
-   hand: [],
-   leftNeighbor: undefined,
-   rightNeighbor: undefined,
-   position: -1,
-};
-const PLAYER_THREE: PlayerData = {
-   name: 'Player3',
-   role: 'regular',
-   dealtCards: [],
-   hand: [],
-   leftNeighbor: undefined,
-   rightNeighbor: undefined,
-   position: -1,
-};
-const PLAYER_FOUR: PlayerData = {
-   name: 'Player4',
-   role: 'regular',
-   dealtCards: [],
-   hand: [],
-   leftNeighbor: undefined,
-   rightNeighbor: undefined,
-   position: -1,
-};
+});
 
-const DEFAULT_PLAYERS: PlayerData[] = [PLAYER_ONE, PLAYER_TWO, PLAYER_THREE, PLAYER_FOUR];
+const PLAYER_ONE: PlayerData = { ...INITIAL_PLAYER_DATA, name: 'Player1' };
+const PLAYER_TWO: PlayerData = { ...INITIAL_PLAYER_DATA, name: 'Player2' };
+const PLAYER_THREE: PlayerData = { ...INITIAL_PLAYER_DATA, name: 'Player3' };
+const PLAYER_FOUR: PlayerData = { ...INITIAL_PLAYER_DATA, name: 'Player4' };
+
+export const DEFAULT_PLAYERS: PlayerData[] = [PLAYER_ONE, PLAYER_TWO, PLAYER_THREE, PLAYER_FOUR];
 
 export const greetNeighbors = (
    me: PlayerData,
@@ -66,5 +44,3 @@ export const addToHand = (player: PlayerData, card: CardData): void => {
 export const removeFromHand = (player: PlayerData, card: CardData): void => {
    player.dealtCards = player.dealtCards.filter(keptCard => keptCard.name !== card.name);
 };
-
-export { DEFAULT_PLAYERS, PLAYER_FOUR, PLAYER_ONE, PLAYER_THREE, PLAYER_TWO };

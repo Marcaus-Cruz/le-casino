@@ -12,6 +12,19 @@ export type HandName =
    | 'Straight-Flush'
    | 'Royal-Flush';
 
+export const OVERALL_HAND_RANK: Record<HandName, number> = Object.freeze({
+   'High-Card': 1,
+   Pair: 2,
+   'Two-Pair': 3,
+   Trips: 4,
+   Straight: 5,
+   Flush: 6,
+   'Full-House': 7,
+   Quads: 8,
+   'Straight-Flush': 9,
+   'Royal-Flush': 10,
+});
+
 export type HandData = {
    name: HandName;
    cards: CardData[];
