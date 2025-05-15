@@ -122,10 +122,12 @@ const Table = () => {
                Submit
             </button>
          </div>
-         <div className='deck'>
-            {currentDeck.map(card => (
-               <Card key={card.name} {...card} />
-            ))}
+         <div className='deck-container'>
+            <div className='deck'>
+               {currentDeck.map(card => (
+                  <Card key={card.name} {...card} />
+               ))}
+            </div>
          </div>
          {isDebug() && (
             <div className='discard-pile'>

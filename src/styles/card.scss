@@ -15,8 +15,8 @@
 .card {
    position: relative;
    margin: 0.5em;
-   width: 6vw;
-   height: 15vh;
+   width: var(--card-width);
+   height: var(--card-height);
    border: 0.5vmin dotted transparent;
 
    cursor: pointer;
