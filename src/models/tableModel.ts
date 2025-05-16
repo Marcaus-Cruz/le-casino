@@ -1,9 +1,10 @@
 import { shuffleArray } from '../poker/utilities.ts';
 import type { CardData, DeckOfCardsData } from '../types/card.types';
 import { SUITS, VALUES } from '../types/card.types';
+import type { HandRankData } from '../types/hand.types.ts';
 import type { PlayerData } from '../types/player.types.ts';
 import type { GamePhase, TableData } from '../types/table.types';
-import PlayerModel, { DEFAULT_PLAYERS } from './playerModel.ts';
+import PlayerModel from './playerModel.ts';
 
 const STARTING_TABLE_DATA: TableData = {
    deck: [],
@@ -15,6 +16,7 @@ const STARTING_TABLE_DATA: TableData = {
    currentPlayerIndex: -1,
    stage: 'setup',
    playerHasDiscarded: {},
+   showdownResults: {},
 };
 
 class TableModel {
@@ -28,6 +30,7 @@ class TableModel {
    currentPlayerIndex: number = -1;
    stage: GamePhase = 'setup';
    hasPlayerDiscarded: Record<number, boolean> = {};
+   showdownResults: Record<number, HandRankData> = {};
 
    constructor() {
       console.log(`[TableModel][constructor]`);
@@ -182,7 +185,36 @@ class TableModel {
 
    doShowdown(): void {
       console.log(`[${TableModel.name}][${this.doShowdown.name}]`, this);
+
       this.stage = 'showdown';
+
+      this.players.forEach(player => player.getHandRank());
+      this.setShowdownStandings();
+   }
+
+   setShowdownStandings(): void {
+      console.log(`[${TableModel.name}][${this.setShowdownStandings.name}]`);
+
+      this.showdownResults = this.players.reduce(
+         (obj, player) => {
+            obj[player.position] = {
+               handRank: player.hand?.handRank as number,
+               relativeRank: player.hand?.relativeRank as number,
+            };
+            return obj;
+         },
+         {} as Record<number, HandRankData>, // TODO: Learn why I need to cast
+      );
+
+      Object.entries(this.showdownResults)
+         .sort(([, playerOne], [, playerTwo]) =>
+            playerOne.handRank !== playerTwo.handRank
+               ? playerTwo.handRank - playerOne.handRank
+               : playerTwo.relativeRank - playerOne.relativeRank,
+         )
+         .forEach(([position], index) => {
+            this.playerPositions[parseInt(position)].showdownStanding = index + 1; // Rank 1, 2, 3, 4
+         });
    }
 
    shuffleDeck(deck: DeckOfCardsData): DeckOfCardsData {

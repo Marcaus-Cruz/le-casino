@@ -51,6 +51,10 @@ const Player = (props: PlayerProps) => {
          <div className='player-info'>
             <div className='name'>{name}</div>
             <div className='role'>{role}</div>
+            <div className='hand'>Hand: {TableModel.playerPositions[position].hand?.name}</div>
+            <div className='standing'>
+               Rank: {TableModel.playerPositions[position].showdownStanding}
+            </div>
          </div>
          {isDebug() && (
             <div className='selected-cards debug'>
