@@ -1,6 +1,7 @@
 @import './_mixins.scss';
-@import './card.scss';
 @import './player.scss';
+@import './card.scss';
+@import './btn.scss';
 
 :root {
    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -17,9 +18,10 @@
    -moz-osx-font-smoothing: grayscale;
 }
 
+// TODO: Move into table file
 #table {
    @include absolute-center();
-   @include flex-container();
+   @include flex-container(column-reverse);
    @include backgroundImg('../assets/img/table.png');
    width: 100vw;
    height: 100vh;
@@ -27,7 +29,32 @@
 }
 
 .discard-pile {
-   @include flex-container(column, wrap);
+   position: absolute;
+   left: 50%;
+   top: 0;
+   width: var(--card-width);
+   height: var(--card-height);
+   border: 0.5vmin solid red;
+
+   .card {
+      @include absolute-center();
+   }
+}
+
+.deck-container {
+   position: absolute;
+   left: calc(50% - var(--card-width));
+   top: 0;
+
+   .deck {
+      position: relative;
+      width: var(--card-width);
+      height: var(--card-height);
+
+      > .card {
+         @include absolute-center();
+      }
+   }
 }
 
 .debug {
@@ -56,7 +83,8 @@
 }
 
 .controls {
-   @include flex-container(column, nowrap, space-evenly);
+   @include flex-container(row, nowrap, space-evenly);
+   padding: 5vmin;
 }
 
 .deck {
