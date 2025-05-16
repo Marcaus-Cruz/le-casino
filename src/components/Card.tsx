@@ -1,4 +1,5 @@
-import { useState, type MouseEvent } from 'react';
+import { useContext, useState, type MouseEvent } from 'react';
+import { TableContext } from '../poker/pokerGame.ts';
 import type { CardData } from '../types/card.types';
 
 export const BACKSIDE_IMAGE = '/src/assets/img/cards/back_light.png';
@@ -8,6 +9,8 @@ type CardProps = CardData & {
 };
 
 const Card = (props: CardProps) => {
+   const TableModel = useContext(TableContext);
+
    const { name, imageFront, imageBack, isFaceUp } = props;
    const { onCardSelected: doCardSelected } = props;
 
@@ -24,7 +27,7 @@ const Card = (props: CardProps) => {
       <button
          title={name}
          className={`card ${isFaceUp ? 'face-up' : 'face-down'} ${isSelected ? 'selected' : ''}`}
-         disabled={!isFaceUp}
+         disabled={!isFaceUp || TableModel.stage === 'showdown'}
          onClick={select}
       >
          {

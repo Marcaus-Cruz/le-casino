@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import PlayerModel from '../models/playerModel.ts';
 import { TableContext } from '../poker/pokerGame.ts';
 import { isDebug } from '../poker/utilities.ts';
@@ -10,15 +10,6 @@ import Player from './Player.tsx';
 const Table = () => {
    const TableModel = useContext(TableContext);
 
-   // const {
-   //    stage: gamePhase,
-   //    roundIndex,
-   //    players,
-   //    deck: currentDeck,
-   //    discardPile: currentDiscardPile,
-   //    currentPlayerIndex,
-   // } = TableModel;
-
    const [gamePhase, setGamePhase] = useState<GamePhase>(TableModel.stage);
    const [roundIndex, setRoundIndex] = useState<number>(TableModel.roundIndex);
    const [players, setPlayers] = useState<PlayerModel[]>(TableModel.players);
@@ -28,35 +19,11 @@ const Table = () => {
       TableModel.currentPlayerIndex,
    );
 
-   const [hasPlayerDiscarded, setHasPlayerDiscarded] = useState<Record<number, boolean>>(
-      players.reduce(
-         (obj, { position }) => {
-            obj[position] = false;
-            return obj;
-         },
-         {} as Record<number, boolean>,
-      ),
-   );
-
-   useEffect(() => {
-      if (Object.values(hasPlayerDiscarded).every(value => value)) {
-         setGamePhase('ready-for-showdown');
-      }
-   }, [hasPlayerDiscarded]);
-
-   // TODO: Make Model have the source truth
    const startGame = () => {
       TableModel.dealCards();
 
-      // setCurrentDeck(TableModel.deck);
-      // setPlayers(TableModel.players);
       setRoundIndex(TableModel.roundIndex);
       setGamePhase(TableModel.stage);
-
-      // setGamePhase('betting');
-      // setGamePhase('discarding');
-
-      // setCurrentPlayerIndex(TableModel.currentPlayerIndex);
    };
 
    const changePlayer = (iterator: number): void => {
@@ -65,22 +32,17 @@ const Table = () => {
    };
 
    const submitCards = () => {
-      // TODO: Submit cards
-      // setGamePhase('showdown');
+      TableModel.doShowdown();
+      setGamePhase(TableModel.stage);
    };
 
    const discardHandler = (cards: CardData[], playerPosition: number): void => {
       console.log('[Table][discardHandler]', { cards });
 
       TableModel.playerIsDiscarding(cards, playerPosition);
-      setCurrentDiscardPile(TableModel.discardPile);
-
-      setHasPlayerDiscarded(prevHasPlayerDiscarded => ({
-         ...prevHasPlayerDiscarded,
-         [playerPosition]: true,
-      }));
-
-      changePlayer(1);
+      setCurrentDiscardPile(TableModel.discardPile); // ! Reducer
+      setGamePhase(TableModel.stage);
+      setCurrentPlayerIndex(TableModel.currentPlayerIndex);
    };
 
    return (
@@ -96,10 +58,18 @@ const Table = () => {
                      Start Game
                   </button>
                )}
-               <button className='btn' onClick={() => changePlayer(-1)}>
+               <button
+                  className='btn'
+                  disabled={['ready-for-showdown', 'showdown'].includes(gamePhase)}
+                  onClick={() => changePlayer(-1)}
+               >
                   Previous Player
                </button>
-               <button className='btn' onClick={() => changePlayer(1)}>
+               <button
+                  className='btn'
+                  disabled={['ready-for-showdown', 'showdown'].includes(gamePhase)}
+                  onClick={() => changePlayer(1)}
+               >
                   Next Player
                </button>
                <button
@@ -107,7 +77,7 @@ const Table = () => {
                   onClick={submitCards}
                   disabled={gamePhase !== 'ready-for-showdown'}
                >
-                  Submit
+                  SHOWDOWN
                </button>
             </div>
             <div className='deck-container'>

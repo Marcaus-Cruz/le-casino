@@ -2,15 +2,15 @@ import type { CardData } from '../types/card.types';
 import type { PlayerData, PlayerRoles } from '../types/player.types';
 import TableModel from './tableModel';
 
-const STARTING_PLAYER_DATA: PlayerData = Object.freeze({
-   name: '',
-   role: 'regular',
-   dealtCards: [],
-   hand: [],
-   leftNeighbor: undefined,
-   rightNeighbor: undefined,
-   position: -1,
-});
+// const STARTING_PLAYER_DATA: PlayerData = Object.freeze({
+//    name: '',
+//    role: 'regular',
+//    dealtCards: [],
+//    hand: [],
+//    leftNeighbor: undefined,
+//    rightNeighbor: undefined,
+//    position: -1,
+// });
 
 const PLAYER_ONE: PlayerData = {
    name: 'Player1',
@@ -93,19 +93,15 @@ export default class PlayerModel {
             : TableModel.playerPositions[myPosition + 1];
    }
 
-   addToHand(card: CardData): CardData[] {
+   addToHand(card: CardData): void {
       console.debug(`[${PlayerModel.name}][${this.addToHand.name}]`, { card });
 
       this.dealtCards.push(card);
-
-      // return this.dealtCards;
    }
 
-   removeFromHand(card: CardData): CardData[] {
+   removeFromHand(card: CardData): void {
       console.debug(`[${PlayerModel.name}][${this.removeFromHand.name}]`, { card });
 
       this.dealtCards = this.dealtCards.filter(keptCard => keptCard.name !== card.name);
-
-      // return this.dealtCards;
    }
 }

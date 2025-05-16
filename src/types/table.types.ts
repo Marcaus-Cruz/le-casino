@@ -14,4 +14,5 @@ export type TableData = {
    players: PlayerData[];
    currentPlayerIndex: number;
    stage: GamePhase;
+   playerHasDiscarded: Record<number, boolean>;
 };

@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { isDebug } from '../poker/utilities';
 import type { CardData } from '../types/card.types';
 import type { PlayerData } from '../types/player.types';
 import Card from './Card';
+import { TableContext } from '../poker/pokerGame.ts';
 
 type PlayerProps = PlayerData & {
    currentPlayerIndex: number;
@@ -10,6 +11,8 @@ type PlayerProps = PlayerData & {
 };
 
 const Player = (props: PlayerProps) => {
+   const TableModel = useContext(TableContext);
+
    const { name, role, dealtCards, position, currentPlayerIndex } = props;
    const { onDiscard: doDiscard } = props;
 
@@ -67,12 +70,12 @@ const Player = (props: PlayerProps) => {
                   value={value}
                   imageFront={imageFront}
                   imageBack={imageBack}
-                  isFaceUp={isCurrentPlayer}
+                  isFaceUp={isDebug() || isCurrentPlayer || TableModel.stage === 'showdown'}
                   onCardSelected={cardSelectedHandler}
                />
             ))}
          </div>
-         {isCurrentPlayer && (
+         {isCurrentPlayer && TableModel.stage === 'discarding' && (
             <button onClick={discard} className='btn'>
                {`${selectedCards.length ? 'Discard' : 'Skip'}`}
             </button>

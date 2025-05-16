@@ -14,6 +14,7 @@ const STARTING_TABLE_DATA: TableData = {
    playerPositions: {},
    currentPlayerIndex: -1,
    stage: 'setup',
+   playerHasDiscarded: {},
 };
 
 class TableModel {
@@ -26,6 +27,7 @@ class TableModel {
    playerPositions: Record<number, PlayerModel> = {};
    currentPlayerIndex: number = -1;
    stage: GamePhase = 'setup';
+   hasPlayerDiscarded: Record<number, boolean> = {};
 
    constructor() {
       console.log(`[TableModel][constructor]`);
@@ -43,7 +45,7 @@ class TableModel {
             name: `${value}_${suit}`,
             imageFront: `/src/assets/img/cards/${suit}_${value}.png`,
             imageBack: '/src/assets/img/cards/back_light.png',
-            isFaceUp: true,
+            isFaceUp: false,
          })),
       );
    }
@@ -58,6 +60,8 @@ class TableModel {
 
          this.setPlayerPosition(newPlayer, index);
          this.setInitialRole(newPlayer);
+
+         this.hasPlayerDiscarded[index] = false;
 
          return newPlayer;
       });
@@ -129,6 +133,8 @@ class TableModel {
    }
 
    updateCurrentPlayerIndex(iterator: number): void {
+      console.log(`[${TableModel.name}][${this.updateCurrentPlayerIndex.name}]`, { iterator });
+
       const firstPlayerIndex = 0;
       const lastPlayerIndex = this.players.length - 1;
 
@@ -144,6 +150,8 @@ class TableModel {
    }
 
    playerIsDiscarding(cards: CardData[], playerPosition: number): void {
+      console.log(`[${TableModel.name}][${this.playerIsDiscarding.name}]`);
+
       const player = this.playerPositions[playerPosition];
       const numCardsToGiveBack = cards.length;
 
@@ -154,6 +162,27 @@ class TableModel {
          player.addToHand(this.drawCard());
       }
       // ! Reducer
+
+      this.hasPlayerDiscarded[playerPosition] = true;
+      // ! Reducer
+      this.checkForShowdown();
+   }
+
+   checkForShowdown(): void {
+      console.log(`[${TableModel.name}][${this.checkForShowdown.name}]`, this.hasPlayerDiscarded);
+
+      if (Object.values(this.hasPlayerDiscarded).every(value => value)) {
+         this.stage = 'ready-for-showdown';
+         this.currentPlayerIndex = -1;
+      } else {
+         this.updateCurrentPlayerIndex(1);
+      }
+      // ! Reducer
+   }
+
+   doShowdown(): void {
+      console.log(`[${TableModel.name}][${this.doShowdown.name}]`, this);
+      this.stage = 'showdown';
    }
 
    shuffleDeck(deck: DeckOfCardsData): DeckOfCardsData {
