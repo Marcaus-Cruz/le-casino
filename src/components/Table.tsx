@@ -1,12 +1,11 @@
-import { useContext, useEffect, useState, context } from 'react';
-import PlayerModel, { DEFAULT_PLAYERS } from '../models/playerModel.ts';
-import TableModelMain from '../models/tableModel.ts';
+import { useContext, useEffect, useState } from 'react';
+import PlayerModel from '../models/playerModel.ts';
+import { TableContext } from '../poker/pokerGame.ts';
 import { isDebug } from '../poker/utilities.ts';
 import type { CardData, DeckOfCardsData } from '../types/card.types';
 import type { GamePhase } from '../types/table.types';
 import Card from './Card.tsx';
 import Player from './Player.tsx';
-import { TableContext } from '../poker/pokerGame.ts';
 
 const Table = () => {
    const TableModel = useContext(TableContext);
@@ -111,10 +110,12 @@ const Table = () => {
                   Submit
                </button>
             </div>
-            <div className='deck'>
-               {currentDeck.map(card => (
-                  <Card key={card.name} {...card} />
-               ))}
+            <div className='deck-container'>
+               <div className='deck'>
+                  {currentDeck.map(card => (
+                     <Card key={card.name} {...card} />
+                  ))}
+               </div>
             </div>
             {isDebug() && (
                <div className='discard-pile'>

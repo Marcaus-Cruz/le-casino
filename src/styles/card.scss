@@ -1,11 +1,16 @@
+:root {
+   --card-width: 6vw;
+   --card-height: 15vh;
+}
+
 .cards {
    flex: 1;
    display: flex;
 }
 
 .selected-cards {
-   display: flex;
-   justify-content: space-evenly;
+   position: absolute;
+   @include flex-container(column, nowrap, space-evenly);
 
    .selected-card-name {
       border: 0.1vmin solid white;
@@ -15,8 +20,8 @@
 .card {
    position: relative;
    margin: 0.5em;
-   width: 6vw;
-   height: 15vh;
+   width: var(--card-width);
+   height: var(--card-height);
    border: 0.5vmin dotted transparent;
 
    cursor: pointer;

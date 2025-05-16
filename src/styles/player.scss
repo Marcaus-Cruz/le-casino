@@ -1,6 +1,5 @@
 .players {
-   display: flex;
-   flex-wrap: wrap;
+   @include flex-container(row, wrap);
    gap: 1em;
 }
 
@@ -10,6 +9,19 @@
    background-color: rgba(0, 0, 0, 0.2);
    border: 0.5vmin solid transparent;
 
+   &:nth-child(3) {
+      order: 4;
+   }
+
+   &:nth-child(4) {
+      order: 3;
+   }
+
+   .player-info,
+   .cards {
+      flex: 1;
+   }
+
    .player-info {
       @include flex-container(row, nowrap, space-evenly, center);
    }
@@ -18,7 +30,8 @@
       align-self: center;
    }
 
-   .btn.btn-discard {
+   .btn {
+      margin: auto;
       cursor: pointer;
 
       &:disabled {
