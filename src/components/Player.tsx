@@ -19,7 +19,7 @@ const Player = (props: PlayerProps) => {
    const [isCurrentPlayer, setIsCurrentPlayer] = useState<boolean>(position === currentPlayerIndex);
    const [selectedCards, setSelectedCards] = useState<CardData[]>([]);
 
-   // * Playing with useEffect
+   // TODO: Don't need this
    useEffect(() => {
       setIsCurrentPlayer(position === currentPlayerIndex);
    }, [currentPlayerIndex, position]);
@@ -52,7 +52,13 @@ const Player = (props: PlayerProps) => {
             <div className='name'>{name}</div>
             <div className='role'>{role}</div>
             <div className='hand'>Hand: {TableModel.playerPositions[position].hand?.name}</div>
-            <div className='standing'>
+            <div
+               className={
+                  TableModel.playerPositions[position].showdownStanding
+                     ? `standing rank-${TableModel.playerPositions[position].showdownStanding}`
+                     : 'standing'
+               }
+            >
                Rank: {TableModel.playerPositions[position].showdownStanding}
             </div>
          </div>

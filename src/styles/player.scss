@@ -1,3 +1,9 @@
+:root {
+   --gold-color: gold;
+   --silver-color: silver;
+   --bronze-color: #996530;
+}
+
 .players {
    @include flex-container(row, wrap);
    gap: 1em;
@@ -42,5 +48,28 @@
    &.current {
       background-color: transparent;
       color: red;
+   }
+
+   .standing {
+      border: 0.1em solid transparent;
+
+      &.rank-1 {
+         color: var(--gold-color);
+         border-color: var(--gold-color);
+      }
+
+      &.rank-2 {
+         color: var(--silver-color);
+         border-color: var(--silver-color);
+      }
+
+      &.rank-3 {
+         color: var(--bronze-color);
+         border-color: var(--bronze-color);
+      }
+
+      &.rank-4 {
+         color: rgb(0, 0, 0);
+      }
    }
 }
