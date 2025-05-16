@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
 import PlayerModel from '../models/playerModel.ts';
+import TableModel from '../models/tableModel.ts';
 import { TableContext } from '../poker/pokerGame.ts';
 import { isDebug } from '../poker/utilities.ts';
 import type { CardData, DeckOfCardsData } from '../types/card.types';
@@ -8,93 +9,56 @@ import Card from './Card.tsx';
 import Player from './Player.tsx';
 
 const Table = () => {
-   const TableModel = useContext(TableContext);
+   const tableModel = useContext(TableContext);
 
-   const [gamePhase, setGamePhase] = useState<GamePhase>(TableModel.stage);
-   const [roundIndex, setRoundIndex] = useState<number>(TableModel.roundIndex);
-   const [players, setPlayers] = useState<PlayerModel[]>(TableModel.players);
-   const [currentDeck, setCurrentDeck] = useState<DeckOfCardsData>(TableModel.deck);
-   const [currentDiscardPile, setCurrentDiscardPile] = useState<CardData[]>(TableModel.discardPile);
+   // ! Reducer
+   const [gamePhase, setGamePhase] = useState<GamePhase>(tableModel.stage);
+   const [roundIndex, setRoundIndex] = useState<number>(tableModel.roundIndex);
+   const [players] = useState<PlayerModel[]>(tableModel.players);
+   const [currentDeck] = useState<DeckOfCardsData>(tableModel.deck);
+   const [currentDiscardPile, setCurrentDiscardPile] = useState<CardData[]>(tableModel.discardPile);
    const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(
-      TableModel.currentPlayerIndex,
+      tableModel.currentPlayerIndex,
    );
 
    const startGame = () => {
-      TableModel.dealCards();
+      tableModel.dealCards();
 
-      setRoundIndex(TableModel.roundIndex);
-      setGamePhase(TableModel.stage);
+      setRoundIndex(tableModel.roundIndex);
+      setGamePhase(tableModel.stage);
    };
 
    const changePlayer = (iterator: number): void => {
-      TableModel.updateCurrentPlayerIndex(iterator);
-      setCurrentPlayerIndex(TableModel.currentPlayerIndex);
+      tableModel.updateCurrentPlayerIndex(iterator);
+      setCurrentPlayerIndex(tableModel.currentPlayerIndex);
    };
 
    const submitCards = () => {
-      TableModel.doShowdown();
-      setGamePhase(TableModel.stage);
+      tableModel.doShowdown();
+      setGamePhase(tableModel.stage);
    };
 
    const discardHandler = (cards: CardData[], playerPosition: number): void => {
       console.log('[Table][discardHandler]', { cards });
 
-      TableModel.playerIsDiscarding(cards, playerPosition);
-      setCurrentDiscardPile(TableModel.discardPile); // ! Reducer
-      setGamePhase(TableModel.stage);
-      setCurrentPlayerIndex(TableModel.currentPlayerIndex);
+      tableModel.playerIsDiscarding(cards, playerPosition);
+      setCurrentDiscardPile(tableModel.discardPile);
+      setGamePhase(tableModel.stage);
+      setCurrentPlayerIndex(tableModel.currentPlayerIndex);
    };
 
    return (
-      <TableContext.Provider value={TableModel}>
+      <TableContext.Provider value={tableModel}>
          <div id='table' className={`${isDebug() ? 'debug' : ''}`}>
-            <div className='round-indicator'>
-               Round: {roundIndex} {gamePhase}
-            </div>
-            <div className='controls'>
-               {/* TODO: create a Button component */}
-               {roundIndex === 0 && (
-                  <button className='btn' onClick={startGame}>
-                     Start Game
-                  </button>
-               )}
-               <button
-                  className='btn'
-                  disabled={['ready-for-showdown', 'showdown'].includes(gamePhase)}
-                  onClick={() => changePlayer(-1)}
-               >
-                  Previous Player
-               </button>
-               <button
-                  className='btn'
-                  disabled={['ready-for-showdown', 'showdown'].includes(gamePhase)}
-                  onClick={() => changePlayer(1)}
-               >
-                  Next Player
-               </button>
-               <button
-                  className='btn'
-                  onClick={submitCards}
-                  disabled={gamePhase !== 'ready-for-showdown'}
-               >
-                  SHOWDOWN
-               </button>
-            </div>
+            <GameInfo game={tableModel} />
+            <Controls startGame={startGame} changePlayer={changePlayer} submitCards={submitCards} />
+
             <div className='deck-container'>
-               <div className='deck'>
-                  {currentDeck.map(card => (
-                     <Card key={card.name} {...card} />
-                  ))}
-               </div>
+               <PileOCards cards={currentDeck} className='deck' />
             </div>
-            {isDebug() && (
-               <div className='discard-pile'>
-                  Discard Pile
-                  {currentDiscardPile.map((card: CardData) => (
-                     <Card key={card.name} {...card} />
-                  ))}
-               </div>
-            )}
+
+            {isDebug() && <PileOCards cards={currentDiscardPile} className='discard-pile' />}
+
             <div className='players'>
                {players.map((playerData: PlayerModel) => (
                   <Player
@@ -110,18 +74,70 @@ const Table = () => {
    );
 };
 
+type GameInfoProps = {
+   game: typeof TableModel;
+};
+const GameInfo = ({ game }: GameInfoProps) => {
+   return (
+      <div className='round-indicator'>
+         Round: {game.roundIndex} {game.stage}
+      </div>
+   );
+};
+
+type ControlsProps = {
+   startGame: () => void;
+   changePlayer: (iterator: number) => void;
+   submitCards: () => void;
+};
+const Controls = ({ startGame, changePlayer, submitCards }: ControlsProps) => {
+   const TableModel = useContext(TableContext);
+
+   return (
+      <div className='controls'>
+         {/* // TODO: create a Button component */}
+         {TableModel.roundIndex === 0 && (
+            <button className='btn' onClick={startGame}>
+               Start Game
+            </button>
+         )}
+         <button
+            className='btn'
+            disabled={['ready-for-showdown', 'showdown'].includes(TableModel.stage)}
+            onClick={() => changePlayer(-1)}
+         >
+            Previous Player
+         </button>
+         <button
+            className='btn'
+            disabled={['ready-for-showdown', 'showdown'].includes(TableModel.stage)}
+            onClick={() => changePlayer(1)}
+         >
+            Next Player
+         </button>
+         <button
+            className='btn'
+            onClick={submitCards}
+            disabled={TableModel.stage !== 'ready-for-showdown'}
+         >
+            SHOWDOWN
+         </button>
+      </div>
+   );
+};
+
+type PileOCardsProps = {
+   cards: CardData[];
+   className?: string;
+};
+const PileOCards = ({ cards, className }: PileOCardsProps) => {
+   return (
+      <div className={className}>
+         {cards.map((card: CardData) => (
+            <Card key={card.name} {...card} />
+         ))}
+      </div>
+   );
+};
+
 export default Table;
-
-// const betHandler = () => {};
-// const callHandler = () => {};
-// const raiseHandler = () => {};
-// const foldHandler = () => {};
-// const checkHandler = () => {};
-// const allInHandler = () => {};
-
-// onBet={betHandler}
-// onCall={callHandler}
-// onRaise={raiseHandler}
-// onFold={foldHandler}
-// onCheck={checkHandler}
-// onAllIn={allInHandler}
