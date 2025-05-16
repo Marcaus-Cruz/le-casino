@@ -3,7 +3,7 @@ import type { CardData, DeckOfCardsData } from '../types/card.types';
 import { SUITS, VALUES } from '../types/card.types';
 import type { PlayerData } from '../types/player.types.ts';
 import type { TableData } from '../types/table.types';
-import { addToHand, greetNeighbors } from './playerModel.ts';
+import { greetNeighbors } from './playerModel.ts';
 
 export const createFreshDeck = (): DeckOfCardsData =>
    SUITS.flatMap(suit =>

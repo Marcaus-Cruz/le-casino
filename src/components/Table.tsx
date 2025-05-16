@@ -13,7 +13,7 @@ import Card from './Card.tsx';
 import Player from './Player.tsx';
 
 const Table = () => {
-   const [tableData, setTableData] = useState<TableData>(tableSetupGame(DEFAULT_PLAYERS));
+   const [tableData] = useState<TableData>(tableSetupGame(DEFAULT_PLAYERS));
    const [gamePhase, setGamePhase] = useState<GamePhase>(tableData.stage);
    const [roundIndex, setRoundIndex] = useState<number>(tableData.roundIndex);
    const [players, setPlayers] = useState<PlayerData[]>(tableData.players);
