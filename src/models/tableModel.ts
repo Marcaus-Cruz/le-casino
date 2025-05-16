@@ -43,12 +43,12 @@ class TableModel {
             name: `${value}_${suit}`,
             imageFront: `/src/assets/img/cards/${suit}_${value}.png`,
             imageBack: '/src/assets/img/cards/back_light.png',
-            isFaceUp: false,
+            isFaceUp: true,
          })),
       );
    }
 
-   setupGame(players: PlayerData[]): void {
+   setupGame(players: PlayerData[]): this {
       console.log(`[${TableModel.name}][${this.setupGame.name}]`, { players });
 
       this.deck = this.shuffleDeck(this.createFreshDeck());
@@ -67,6 +67,8 @@ class TableModel {
 
       this.roundIndex += 1;
       this.currentPlayerIndex += 1;
+
+      return this;
    }
 
    setInitialRole(player: PlayerModel): void {
@@ -104,16 +106,14 @@ class TableModel {
    dealCards(numCardsToDeal: number = 5): void {
       console.log(`[${TableModel.name}][${this.dealCards.name}]`, { numCardsToDeal });
 
-      let cardsDealtCounter = this.players.length * numCardsToDeal;
+      let nextToDeal = this.playerPositions[0];
 
-      while (cardsDealtCounter > 0) {
-         this.players.forEach((player: PlayerModel) => {
-            if (cardsDealtCounter === 0) return;
-
-            player.addToHand(this.drawCard());
-            cardsDealtCounter--;
-         });
+      while (nextToDeal.dealtCards.length < numCardsToDeal) {
+         nextToDeal.addToHand(this.drawCard());
+         nextToDeal = nextToDeal.leftNeighbor as PlayerModel;
       }
+      this.roundIndex += 1; // ! Reducer
+      this.stage = 'discarding'; // ! Reducer
    }
 
    drawCard(): CardData {
@@ -123,9 +123,37 @@ class TableModel {
    }
 
    addToDiscardPile(cards: CardData[]): CardData[] {
-      this.discardPile = [...this.discardPile, ...cards];
-      // this.discardPile.push(card);
+      this.discardPile = [...this.discardPile, ...cards]; // concat or spread? // ! Reducer
+
       return this.discardPile;
+   }
+
+   updateCurrentPlayerIndex(iterator: number): void {
+      const firstPlayerIndex = 0;
+      const lastPlayerIndex = this.players.length - 1;
+
+      // TODO: Use Neighbors
+      if (this.currentPlayerIndex === lastPlayerIndex && iterator > 0) {
+         this.currentPlayerIndex = firstPlayerIndex;
+      } else if (this.currentPlayerIndex === 0 && iterator < 0) {
+         this.currentPlayerIndex = lastPlayerIndex;
+      } else {
+         this.currentPlayerIndex += iterator;
+      }
+      // ! Reducer
+   }
+
+   playerIsDiscarding(cards: CardData[], playerPosition: number): void {
+      const player = this.playerPositions[playerPosition];
+      const numCardsToGiveBack = cards.length;
+
+      this.addToDiscardPile(cards);
+      cards.forEach(card => player.removeFromHand(card));
+
+      for (let i = 0; i < numCardsToGiveBack; i += 1) {
+         player.addToHand(this.drawCard());
+      }
+      // ! Reducer
    }
 
    shuffleDeck(deck: DeckOfCardsData): DeckOfCardsData {

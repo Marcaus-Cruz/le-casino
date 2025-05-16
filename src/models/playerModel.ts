@@ -12,10 +12,42 @@ const STARTING_PLAYER_DATA: PlayerData = Object.freeze({
    position: -1,
 });
 
-const PLAYER_ONE: PlayerData = Object.freeze({ ...STARTING_PLAYER_DATA, name: 'Player1' });
-const PLAYER_TWO: PlayerData = Object.freeze({ ...STARTING_PLAYER_DATA, name: 'Player2' });
-const PLAYER_THREE: PlayerData = Object.freeze({ ...STARTING_PLAYER_DATA, name: 'Player3' });
-const PLAYER_FOUR: PlayerData = Object.freeze({ ...STARTING_PLAYER_DATA, name: 'Player4' });
+const PLAYER_ONE: PlayerData = {
+   name: 'Player1',
+   role: 'regular',
+   dealtCards: [],
+   hand: [],
+   leftNeighbor: undefined,
+   rightNeighbor: undefined,
+   position: -1,
+};
+const PLAYER_TWO: PlayerData = {
+   name: 'Player2',
+   role: 'regular',
+   dealtCards: [],
+   hand: [],
+   leftNeighbor: undefined,
+   rightNeighbor: undefined,
+   position: -1,
+};
+const PLAYER_THREE: PlayerData = {
+   name: 'Player3',
+   role: 'regular',
+   dealtCards: [],
+   hand: [],
+   leftNeighbor: undefined,
+   rightNeighbor: undefined,
+   position: -1,
+};
+const PLAYER_FOUR: PlayerData = {
+   name: 'Player4',
+   role: 'regular',
+   dealtCards: [],
+   hand: [],
+   leftNeighbor: undefined,
+   rightNeighbor: undefined,
+   position: -1,
+};
 const DEFAULT_PLAYERS: PlayerData[] = [PLAYER_ONE, PLAYER_TWO, PLAYER_THREE, PLAYER_FOUR];
 
 export { DEFAULT_PLAYERS };
@@ -36,7 +68,7 @@ export default class PlayerModel {
    constructor(options: PlayerData) {
       console.log(`[${PlayerModel.name}][constructor]`, { options });
 
-      Object.assign(this, STARTING_PLAYER_DATA, options);
+      Object.assign(this, options);
    }
 
    greetNeighbors(): void {
@@ -66,7 +98,7 @@ export default class PlayerModel {
 
       this.dealtCards.push(card);
 
-      return this.dealtCards;
+      // return this.dealtCards;
    }
 
    removeFromHand(card: CardData): CardData[] {
@@ -74,6 +106,6 @@ export default class PlayerModel {
 
       this.dealtCards = this.dealtCards.filter(keptCard => keptCard.name !== card.name);
 
-      return this.dealtCards;
+      // return this.dealtCards;
    }
 }
