@@ -43,7 +43,6 @@ const Table = () => {
       }
    }, [hasPlayerDiscarded]);
 
-   // TODO: Make Model have the source truth
    const startGame = () => {
       dealCards(tableData.deck, tableData.players);
 
