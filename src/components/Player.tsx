@@ -13,13 +13,12 @@ type PlayerProps = PlayerData & {
 const Player = (props: PlayerProps) => {
    const TableModel = useContext(TableContext);
 
-   const { name, role, dealtCards, position, currentPlayerIndex } = props;
+   const { name, role, dealtCards, position, currentPlayerIndex, showdownStanding, hand } = props;
    const { onDiscard: doDiscard } = props;
 
    const [isCurrentPlayer, setIsCurrentPlayer] = useState<boolean>(position === currentPlayerIndex);
    const [selectedCards, setSelectedCards] = useState<CardData[]>([]);
 
-   // TODO: Don't need this
    useEffect(() => {
       setIsCurrentPlayer(position === currentPlayerIndex);
    }, [currentPlayerIndex, position]);
@@ -51,15 +50,9 @@ const Player = (props: PlayerProps) => {
          <div className='player-info'>
             <div className='name'>{name}</div>
             <div className='role'>{role}</div>
-            <div className='hand'>Hand: {TableModel.playerPositions[position].hand?.name}</div>
-            <div
-               className={
-                  TableModel.playerPositions[position].showdownStanding
-                     ? `standing rank-${TableModel.playerPositions[position].showdownStanding}`
-                     : 'standing'
-               }
-            >
-               Rank: {TableModel.playerPositions[position].showdownStanding}
+            <div className='hand'>Hand: {hand?.name}</div>
+            <div className={showdownStanding ? `standing rank-${showdownStanding}` : 'standing'}>
+               Rank: {showdownStanding}
             </div>
          </div>
          {isDebug() && (
@@ -85,11 +78,13 @@ const Player = (props: PlayerProps) => {
                />
             ))}
          </div>
-         {isCurrentPlayer && TableModel.stage === 'discarding' && (
-            <button onClick={discard} className='btn'>
-               {`${selectedCards.length ? 'Discard' : 'Skip'}`}
-            </button>
-         )}
+         {isCurrentPlayer &&
+            TableModel.stage === 'discarding' &&
+            !TableModel.hasPlayerDiscarded[position] && (
+               <button onClick={discard} className='btn'>
+                  {`${selectedCards.length ? 'Discard' : 'Discard None'}`}
+               </button>
+            )}
       </div>
    );
 };
