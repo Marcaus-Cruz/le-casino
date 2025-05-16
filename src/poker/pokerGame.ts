@@ -1,4 +1,4 @@
-import { DEFAULT_PLAYERS } from '../models/playerModel';
+import { DEFAULT_PLAYERS } from '../types/player.types';
 import TableModel from '../models/tableModel';
 import { createContext } from 'react';
 

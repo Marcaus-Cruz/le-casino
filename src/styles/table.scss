@@ -1,0 +1,51 @@
+// TODO: Move into table file
+#table {
+   @include absolute-center();
+   @include flex-container(column-reverse);
+   @include backgroundImg('../assets/img/table.png');
+   width: 100vw;
+   height: 100vh;
+   background-color: #1f3223;
+
+   .round-indicator {
+      position: absolute;
+   }
+
+   .controls {
+      @include flex-container(row, nowrap, space-evenly);
+      padding: 5vmin;
+   }
+
+   .deck-container {
+      position: absolute;
+      left: calc(50% - var(--card-width));
+      top: 0;
+
+      .deck {
+         position: relative;
+         width: var(--card-width);
+         height: var(--card-height);
+
+         > .card {
+            @include absolute-center();
+         }
+      }
+   }
+
+   .discard-pile {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: var(--card-width);
+      height: var(--card-height);
+      border: 0.5vmin solid red;
+
+      .card {
+         @include absolute-center();
+      }
+   }
+
+   .players {
+      flex: 1;
+   }
+}
