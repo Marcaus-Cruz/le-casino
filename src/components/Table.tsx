@@ -8,10 +8,9 @@ import { dealCards, drawCard, tableSetupGame } from '../models/tableModel.ts';
 import { isDebug } from '../poker/utilities.ts';
 import type { CardData, DeckOfCardsData } from '../types/card.types';
 import type { PlayerData } from '../types/player.types';
-import type { TableData } from '../types/table.types';
+import type { GamePhase, TableData } from '../types/table.types';
 import Card from './Card.tsx';
 import Player from './Player.tsx';
-import type { GamePhase } from '../types/table.types';
 
 const Table = () => {
    const [tableData, setTableData] = useState<TableData>(tableSetupGame(DEFAULT_PLAYERS));

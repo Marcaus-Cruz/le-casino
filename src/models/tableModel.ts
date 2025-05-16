@@ -81,15 +81,10 @@ export const dealCards = (
    players: PlayerData[],
    numCardsToDeal: number = 5,
 ): void => {
-   let cardsDealtCounter = players.length * numCardsToDeal;
+   let nextToDeal = players[0];
 
-   while (cardsDealtCounter > 0) {
-      players.forEach(player => {
-         if (cardsDealtCounter === 0) return;
-
-         addToHand(player, drawCard(deck));
-         cardsDealtCounter--;
-      });
+   while (nextToDeal.dealtCards.length < numCardsToDeal) {
+      nextToDeal.dealtCards.push(deck.pop() as CardData);
+      nextToDeal = nextToDeal.leftNeighbor as PlayerData;
    }
 };
-
