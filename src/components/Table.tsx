@@ -12,8 +12,8 @@ const Table = () => {
    const tableModel = useContext(TableContext);
 
    // ! Reducer
-   const [gamePhase, setGamePhase] = useState<GamePhase>(tableModel.stage);
-   const [roundIndex, setRoundIndex] = useState<number>(tableModel.roundIndex);
+   const [, setGamePhase] = useState<GamePhase>(tableModel.stage);
+   const [, setRoundIndex] = useState<number>(tableModel.roundIndex);
    const [players] = useState<PlayerModel[]>(tableModel.players);
    const [currentDeck] = useState<DeckOfCardsData>(tableModel.deck);
    const [currentDiscardPile, setCurrentDiscardPile] = useState<CardData[]>(tableModel.discardPile);
