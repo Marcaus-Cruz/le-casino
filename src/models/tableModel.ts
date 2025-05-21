@@ -46,8 +46,8 @@ class TableModel {
             suit,
             value,
             name: `${value}_${suit}`,
-            imageFront: `/src/assets/img/cards/${suit}_${value}.png`,
-            imageBack: '/src/assets/img/cards/back_light.png',
+            imageFront: `/img/cards/${suit}_${value}.png`,
+            imageBack: '/img/cards/back_light.png',
             isFaceUp: false,
          })),
       );

@@ -2,7 +2,7 @@ import { useContext, useState, type MouseEvent } from 'react';
 import { TableContext } from '../poker/pokerGame.ts';
 import type { CardData } from '../types/card.types';
 
-export const BACKSIDE_IMAGE = '/src/assets/img/cards/back_light.png';
+export const BACKSIDE_IMAGE = '/public/img/cards/back_light.png';
 
 type CardProps = CardData & {
    onCardSelected?: (selectedCard: string) => void;
