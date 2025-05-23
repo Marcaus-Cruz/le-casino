@@ -1,7 +1,7 @@
-import Table from './components/Table';
+import HomeView from './views/HomeView';
 
 function App() {
-   return <Table />;
+   return <HomeView />;
 }
 
 export default App;

@@ -4,11 +4,17 @@ import TableModel from '../models/tableModel.ts';
 import { TableContext } from '../poker/pokerGame.ts';
 import { isDebug } from '../poker/utilities.ts';
 import type { CardData, DeckOfCardsData } from '../types/card.types';
-import type { GamePhase } from '../types/table.types';
+import type { GamePhase, GameType } from '../types/table.types';
 import Card from './Card.tsx';
 import Player from './Player.tsx';
 
-const Table = () => {
+const Table = ({
+   selectedGame,
+   onGameLeave,
+}: {
+   selectedGame: GameType;
+   onGameLeave: () => void;
+}) => {
    const tableModel = useContext(TableContext);
 
    // ! Reducer
@@ -50,6 +56,8 @@ const Table = () => {
    return (
       <TableContext.Provider value={tableModel}>
          <div id='table' className={`${isDebug() ? 'debug' : ''}`}>
+            <TableHeader selectedGame={selectedGame} onGameLeave={onGameLeave} />
+
             <GameInfo game={tableModel} />
             <Controls startGame={startGame} changePlayer={changePlayer} submitCards={submitCards} />
 
@@ -71,6 +79,23 @@ const Table = () => {
             </div>
          </div>
       </TableContext.Provider>
+   );
+};
+
+const TableHeader = ({
+   selectedGame,
+   onGameLeave,
+}: {
+   selectedGame: GameType;
+   onGameLeave: () => void;
+}) => {
+   return (
+      <div className='table-header'>
+         <div className={`current-game ${selectedGame}`}>{selectedGame}</div>
+         <button className='btn btn-exit' onClick={() => onGameLeave()}>
+            Leave Game
+         </button>
+      </div>
    );
 };
 

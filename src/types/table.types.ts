@@ -1,7 +1,16 @@
 import type { DeckOfCardsData } from './card.types';
 import type { PlayerData } from './player.types';
 
-export type GameType = 'draw-five' | 'texas-hold-em' | 'omaha';
+export type GameType = 'draw-five' | 'texas-hold-em' | 'omaha' | 'blackjack' | 'slots' | 'roulette';
+
+export const GAME_TYPES: Record<string, GameType> = Object.freeze({
+   drawFive: 'draw-five',
+   texasHoldEm: 'texas-hold-em',
+   omaha: 'omaha',
+   blackjack: 'blackjack',
+   slots: 'slots',
+   roulette: 'roulette',
+});
 
 export type GamePhase = 'setup' | 'betting' | 'discarding' | 'ready-for-showdown' | 'showdown';
 
