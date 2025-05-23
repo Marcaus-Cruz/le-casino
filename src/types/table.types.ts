@@ -5,11 +5,11 @@ export type GameType = 'draw-five' | 'texas-hold-em' | 'omaha' | 'blackjack' | '
 
 export const GAME_TYPES: Record<string, GameType> = Object.freeze({
    drawFive: 'draw-five',
+   blackjack: 'blackjack',
+   roulette: 'roulette',
+   slots: 'slots',
    texasHoldEm: 'texas-hold-em',
    omaha: 'omaha',
-   blackjack: 'blackjack',
-   slots: 'slots',
-   roulette: 'roulette',
 });
 
 export type GamePhase = 'setup' | 'betting' | 'discarding' | 'ready-for-showdown' | 'showdown';

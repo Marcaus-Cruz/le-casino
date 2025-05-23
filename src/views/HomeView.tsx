@@ -5,13 +5,14 @@ import { GAME_TYPES } from '../types/table.types';
 
 export default function HomeView() {
    const [selectedGame, setSelectedGame] = useState<GameType | null>(null);
-   const validGameTypes = ['draw-five'];
+
+   const validGameTypes: GameType[] = ['draw-five'];
 
    const onGameLeave = () => setSelectedGame(null);
 
    return (
       <div className='view home'>
-         {!selectedGame && <div className='caption'>Select a Game</div>}
+         {!selectedGame && <div className='caption'>Le Casino</div>}
          {!selectedGame && (
             <div className='game-container'>
                {Object.entries(GAME_TYPES).map(([btnText, gameType]) => {
