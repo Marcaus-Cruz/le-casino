@@ -1,0 +1,30 @@
+.view.home {
+   @include flex-container(column, nowrap, space-around, center);
+   height: 90vh; // Figure out how to flex this to just fill
+
+   .caption {
+      flex: 1;
+      @include flex-container(row, nowrap, center, center);
+      font-size: 5vmax;
+   }
+
+   .game-container {
+      flex: 1;
+      @include flex-container(column, nowrap, center);
+
+      .btn {
+         flex: 1;
+         position: relative;
+         margin: 0.5em;
+
+         text-transform: uppercase;
+
+         &:disabled:after {
+            position: absolute;
+            content: 'coming soon...';
+            left: calc(100% + 1em);
+            text-wrap: nowrap;
+         }
+      }
+   }
+}
