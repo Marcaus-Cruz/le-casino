@@ -6,6 +6,29 @@
    height: 100vh;
    background-color: #1f3223;
 
+   .table-header {
+      position: fixed;
+      @include flex-container(column, nowrap, center, center);
+      top: 1vmin;
+      left: 1vmin;
+      font-size: 2.5vmin;
+
+      .current-game {
+         text-transform: uppercase;
+      }
+
+      .btn.btn-exit {
+         font-size: 0.5em;
+
+         &:hover,
+         &:focus,
+         &:active {
+            background-color: red;
+            color: white;
+         }
+      }
+   }
+
    .round-indicator {
       position: absolute;
    }
