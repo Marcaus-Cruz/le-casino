@@ -7,6 +7,7 @@ import type { CardData, DeckOfCardsData } from '../types/card.types';
 import type { GamePhase, GameType } from '../types/table.types';
 import Card from './Card.tsx';
 import Player from './Player.tsx';
+import TableHeader from './TableHeader.tsx';
 
 const Table = ({
    selectedGame,
@@ -79,23 +80,6 @@ const Table = ({
             </div>
          </div>
       </TableContext.Provider>
-   );
-};
-
-const TableHeader = ({
-   selectedGame,
-   onGameLeave,
-}: {
-   selectedGame: GameType;
-   onGameLeave: () => void;
-}) => {
-   return (
-      <div className='table-header'>
-         <div className={`current-game ${selectedGame}`}>{selectedGame}</div>
-         <button className='btn btn-exit' onClick={() => onGameLeave()}>
-            Leave Game
-         </button>
-      </div>
    );
 };
 
