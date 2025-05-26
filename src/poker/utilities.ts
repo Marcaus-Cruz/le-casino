@@ -9,3 +9,7 @@ export function wait(ms: number): Promise<void> {
 export function isDebug(): boolean {
    return new URLSearchParams(window.location.search).get('debug') === 'true';
 }
+
+export function getCopy<T>(obj: T): T {
+   return JSON.parse(JSON.stringify(obj));
+}

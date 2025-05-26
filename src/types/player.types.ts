@@ -1,3 +1,4 @@
+import { getCopy } from '../poker/utilities';
 import type { CardData } from './card.types';
 import type { HandData } from './hand.types';
 
@@ -14,54 +15,19 @@ export type PlayerData = {
    showdownStanding?: number;
 };
 
-// const STARTING_PLAYER_DATA: PlayerData = Object.freeze({
-//    name: '',
-//    role: 'regular',
-//    dealtCards: [],
-//    hand: [],
-//    leftNeighbor: undefined,
-//    rightNeighbor: undefined,
-//    position: -1,
-// });
+const STARTING_PLAYER_DATA: PlayerData = Object.freeze({
+   name: '',
+   role: 'regular',
+   dealtCards: [],
+   hand: undefined,
+   leftNeighbor: undefined,
+   rightNeighbor: undefined,
+   position: -1,
+   showdownStanding: undefined,
+});
 
-const PLAYER_ONE: PlayerData = {
-   name: 'Player1',
-   role: 'regular',
-   dealtCards: [],
-   hand: undefined,
-   leftNeighbor: undefined,
-   rightNeighbor: undefined,
-   position: -1,
-   showdownStanding: undefined,
-};
-const PLAYER_TWO: PlayerData = {
-   name: 'Player2',
-   role: 'regular',
-   dealtCards: [],
-   hand: undefined,
-   leftNeighbor: undefined,
-   rightNeighbor: undefined,
-   position: -1,
-   showdownStanding: undefined,
-};
-const PLAYER_THREE: PlayerData = {
-   name: 'Player3',
-   role: 'regular',
-   dealtCards: [],
-   hand: undefined,
-   leftNeighbor: undefined,
-   rightNeighbor: undefined,
-   position: -1,
-   showdownStanding: undefined,
-};
-const PLAYER_FOUR: PlayerData = {
-   name: 'Player4',
-   role: 'regular',
-   dealtCards: [],
-   hand: undefined,
-   leftNeighbor: undefined,
-   rightNeighbor: undefined,
-   position: -1,
-   showdownStanding: undefined,
-};
+const PLAYER_ONE: PlayerData = { ...getCopy(STARTING_PLAYER_DATA), name: 'Player1' };
+const PLAYER_TWO: PlayerData = { ...getCopy(STARTING_PLAYER_DATA), name: 'Player2' };
+const PLAYER_THREE: PlayerData = { ...getCopy(STARTING_PLAYER_DATA), name: 'Player3' };
+const PLAYER_FOUR: PlayerData = { ...getCopy(STARTING_PLAYER_DATA), name: 'Player4' };
 export const DEFAULT_PLAYERS: PlayerData[] = [PLAYER_ONE, PLAYER_TWO, PLAYER_THREE, PLAYER_FOUR];
