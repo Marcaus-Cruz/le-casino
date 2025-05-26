@@ -6,12 +6,13 @@ export const BACKSIDE_IMAGE = '/img/cards/back_light.png';
 
 type CardProps = CardData & {
    onCardSelected?: (selectedCard: string) => void;
+   isDisabled?: boolean;
 };
 
 const Card = (props: CardProps) => {
    const TableModel = useContext(TableContext);
 
-   const { name, imageFront, imageBack, isFaceUp } = props;
+   const { name, imageFront, imageBack, isFaceUp, isDisabled } = props;
    const { onCardSelected: doCardSelected } = props;
 
    const [isSelected, setIsSelected] = useState(false);
@@ -27,7 +28,7 @@ const Card = (props: CardProps) => {
       <button
          title={name}
          className={`card ${isFaceUp ? 'face-up' : 'face-down'} ${isSelected ? 'selected' : ''}`}
-         disabled={!isFaceUp || TableModel.stage === 'showdown'}
+         disabled={!isFaceUp || TableModel.stage === 'showdown' || isDisabled}
          onClick={select}
       >
          {

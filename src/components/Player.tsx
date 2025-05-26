@@ -18,6 +18,10 @@ const Player = (props: PlayerProps) => {
 
    const [isCurrentPlayer, setIsCurrentPlayer] = useState<boolean>(position === currentPlayerIndex);
    const [selectedCards, setSelectedCards] = useState<CardData[]>([]);
+   const canSelectCards =
+      isCurrentPlayer &&
+      TableModel.stage === 'discarding' &&
+      !TableModel.hasPlayerDiscarded[position];
 
    useEffect(() => {
       setIsCurrentPlayer(position === currentPlayerIndex);
@@ -75,16 +79,15 @@ const Player = (props: PlayerProps) => {
                   imageBack={imageBack}
                   isFaceUp={isDebug() || isCurrentPlayer || TableModel.stage === 'showdown'}
                   onCardSelected={cardSelectedHandler}
+                  isDisabled={!canSelectCards}
                />
             ))}
          </div>
-         {isCurrentPlayer &&
-            TableModel.stage === 'discarding' &&
-            !TableModel.hasPlayerDiscarded[position] && (
-               <button onClick={discard} className='btn'>
-                  {`${selectedCards.length ? 'Discard' : 'Discard None'}`}
-               </button>
-            )}
+         {canSelectCards && (
+            <button onClick={discard} className='btn'>
+               {`${selectedCards.length ? 'Discard' : 'Discard None'}`}
+            </button>
+         )}
       </div>
    );
 };
