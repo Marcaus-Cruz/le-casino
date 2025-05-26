@@ -19,10 +19,10 @@ const STARTING_PLAYER_DATA: PlayerData = Object.freeze({
    name: '',
    role: 'regular',
    dealtCards: [],
-   hand: undefined,
+   position: -1,
    leftNeighbor: undefined,
    rightNeighbor: undefined,
-   position: -1,
+   hand: undefined,
    showdownStanding: undefined,
 });
 

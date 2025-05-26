@@ -138,17 +138,11 @@ class TableModel {
    updateCurrentPlayerIndex(iterator: number): void {
       console.log(`[${TableModel.name}][${this.updateCurrentPlayerIndex.name}]`, { iterator });
 
-      const firstPlayerIndex = 0;
-      const lastPlayerIndex = this.players.length - 1;
-
-      // TODO: Use Neighbors
-      if (this.currentPlayerIndex === lastPlayerIndex && iterator > 0) {
-         this.currentPlayerIndex = firstPlayerIndex;
-      } else if (this.currentPlayerIndex === 0 && iterator < 0) {
-         this.currentPlayerIndex = lastPlayerIndex;
-      } else {
-         this.currentPlayerIndex += iterator;
-      }
+      const currentPlayer = this.playerPositions[this.currentPlayerIndex];
+      this.currentPlayerIndex =
+         (iterator > 0
+            ? currentPlayer.leftNeighbor?.position
+            : currentPlayer.rightNeighbor?.position) ?? (this.currentPlayerIndex += iterator);
       // ! Reducer
    }
 
