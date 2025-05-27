@@ -12,7 +12,7 @@ export default function HomeView() {
 
    return (
       <div className='view home'>
-         {!selectedGame && <div className='caption'>Le Casino</div>}
+         {!selectedGame && <div className='caption'></div>}
          {!selectedGame && (
             <div className='game-container'>
                {Object.entries(GAME_TYPES).map(([btnText, gameType]) => {

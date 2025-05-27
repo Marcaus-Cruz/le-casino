@@ -20,6 +20,10 @@
    -moz-osx-font-smoothing: grayscale;
 }
 
+body {
+   margin: 0;
+}
+
 .debug {
    .deck {
       border: 0.5vmin solid magenta;

@@ -1,11 +1,15 @@
 .view.home {
    @include flex-container(column, nowrap, space-around, center);
-   height: 90vh; // Figure out how to flex this to just fill
+   height: 100vh;
+   background-color: #142436;
 
    .caption {
-      flex: 1;
+      flex: 2;
       @include flex-container(row, nowrap, center, center);
-      font-size: 5vmax;
+      @include backgroundImg('/img/logo-lecasino-v1.png');
+
+      width: -webkit-fill-available;
+      border-radius: 4vmin;
    }
 
    .game-container {
