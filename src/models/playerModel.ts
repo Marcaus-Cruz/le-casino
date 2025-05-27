@@ -58,9 +58,21 @@ export default class PlayerModel {
       this.dealtCards = this.dealtCards.filter(keptCard => keptCard.name !== card.name);
    }
 
+   emptyHand(): void {
+      console.log(`[${PlayerModel.name}][${this.emptyHand.name}]`);
+
+      this.dealtCards = [];
+      this.hand = undefined;
+   }
+
+   clearShowdownStanding(): void {
+      console.log(`[${PlayerModel.name}][${this.clearShowdownStanding.name}]`);
+      this.showdownStanding = undefined;
+   }
+
    /**
     * ! Source: ChatGPT
-    * 
+    *
     * Returns a HandData for any 5-card poker hand.
     * Uses a frequency-then-rank sort to build a unique
     * relativeRank in base-14, so you can break ties

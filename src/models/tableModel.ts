@@ -2,7 +2,7 @@ import { shuffleArray } from '../poker/utilities.ts';
 import type { CardData, DeckOfCardsData } from '../types/card.types';
 import { SUITS, VALUES } from '../types/card.types';
 import type { HandRankData } from '../types/hand.types.ts';
-import type { PlayerData } from '../types/player.types.ts';
+import type { PlayerData, PlayerRoles } from '../types/player.types.ts';
 import type { GamePhase, TableData } from '../types/table.types';
 import PlayerModel from './playerModel.ts';
 
@@ -62,7 +62,17 @@ class TableModel {
          const newPlayer = new PlayerModel(player);
 
          this.setPlayerPosition(newPlayer, index);
-         this.setInitialRole(newPlayer);
+
+         // Set initial player role
+         if (index === 0) {
+            newPlayer.role = 'dealer';
+         } else if (index === 1) {
+            newPlayer.role = 'big-blind';
+         } else if (index === 2) {
+            newPlayer.role = 'small-blind';
+         } else {
+            newPlayer.role = 'regular';
+         }
 
          this.hasPlayerDiscarded[index] = false;
 
@@ -78,20 +88,25 @@ class TableModel {
       return this;
    }
 
-   setInitialRole(player: PlayerModel): void {
-      console.log(`[${TableModel.name}][${this.setInitialRole.name}]`, { player });
+   nextRound(): void {
+      console.log(`[${TableModel.name}][${this.nextRound.name}]`);
 
-      const { position } = player;
+      this.players.forEach(player => {
+         player.emptyHand();
+         player.clearShowdownStanding();
+      });
+      this.resetHasPlayerDiscards();
 
-      if (position === 0) {
-         player.role = 'dealer';
-      } else if (position === 1) {
-         player.role = 'big-blind';
-      } else if (position === 2) {
-         player.role = 'small-blind';
-      } else {
-         player.role = 'regular';
-      }
+      this.deck = this.shuffleDeck(this.createFreshDeck());
+      this.discardPile = [];
+      this.pot = 0;
+      this.showdownResults = {};
+      this.stage = 'setup';
+
+      this.rotateTable();
+      this.currentPlayerIndex = this.findRole('big-blind').position;
+
+      this.roundIndex += 1; // ! Reducer
    }
 
    setPlayerPosition(player: PlayerModel, position: number): void {
@@ -113,13 +128,12 @@ class TableModel {
    dealCards(numCardsToDeal: number = 5): void {
       console.log(`[${TableModel.name}][${this.dealCards.name}]`, { numCardsToDeal });
 
-      let nextToDeal = this.playerPositions[0];
+      let nextToDeal = this.findRole('big-blind') || this.playerPositions[0];
 
       while (nextToDeal.dealtCards.length < numCardsToDeal) {
          nextToDeal.addToHand(this.drawCard());
          nextToDeal = nextToDeal.leftNeighbor as PlayerModel;
       }
-      this.roundIndex += 1; // ! Reducer
       this.stage = 'discarding'; // ! Reducer
    }
 
@@ -209,6 +223,50 @@ class TableModel {
          .forEach(([position], index) => {
             this.playerPositions[parseInt(position)].showdownStanding = index + 1; // Rank 1, 2, 3, 4
          });
+   }
+
+   rotateTable(): void {
+      console.log(`[${TableModel.name}][${this.rotateTable.name}]`);
+
+      let currentPlayer = this.findRole('dealer');
+      currentPlayer.role = 'regular'; // reset role, even if it will be overwritten
+
+      ['dealer', 'big-blind', 'small-blind'].forEach(role => {
+         currentPlayer.leftNeighbor.role = role;
+         currentPlayer = currentPlayer.leftNeighbor;
+      });
+   }
+
+   resetHasPlayerDiscards(): void {
+      console.log(`[${TableModel.name}][${this.resetHasPlayerDiscards.name}]`, this.players);
+
+      if (this.players.length === 0) {
+         console.error('No players found in table');
+         return;
+      }
+
+      // Reset player discards map
+      this.hasPlayerDiscarded = this.players.reduce(
+         (map, player) => {
+            map[player.position] = false;
+            return map;
+         },
+         {} as Record<number, boolean>,
+      );
+   }
+
+   findRole(roleName: PlayerRoles): PlayerModel {
+      console.log(`[${TableModel.name}][${this.findRole.name}]`, { roleName });
+
+      return this.players.find(player => player.role === roleName) as PlayerModel;
+   }
+
+   restartGame(): this {
+      console.log(`[${TableModel.name}][${this.restartGame.name}]`);
+
+      Object.assign(this, STARTING_TABLE_DATA);
+
+      return this;
    }
 
    shuffleDeck(deck: DeckOfCardsData): DeckOfCardsData {
