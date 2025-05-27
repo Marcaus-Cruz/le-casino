@@ -45,6 +45,13 @@ const Table = ({
       setGamePhase(tableModel.stage);
    };
 
+   const nextRound = () => {
+      tableModel.nextRound();
+      setRoundIndex(tableModel.roundIndex);
+      setGamePhase(tableModel.stage);
+      setCurrentPlayerIndex(tableModel.currentPlayerIndex);
+   };
+
    const discardHandler = (cards: CardData[], playerPosition: number): void => {
       console.log('[Table][discardHandler]', { cards });
 
@@ -60,7 +67,12 @@ const Table = ({
             <TableHeader selectedGame={selectedGame} onGameLeave={onGameLeave} />
 
             <GameInfo game={tableModel} />
-            <Controls startGame={startGame} changePlayer={changePlayer} submitCards={submitCards} />
+            <Controls
+               startGame={startGame}
+               changePlayer={changePlayer}
+               submitCards={submitCards}
+               nextRound={nextRound}
+            />
 
             <div className='deck-container'>
                <PileOCards cards={currentDeck} className='deck' />
@@ -98,39 +110,47 @@ type ControlsProps = {
    startGame: () => void;
    changePlayer: (iterator: number) => void;
    submitCards: () => void;
+   nextRound: () => void;
 };
-const Controls = ({ startGame, changePlayer, submitCards }: ControlsProps) => {
+const Controls = ({ startGame, changePlayer, submitCards, nextRound }: ControlsProps) => {
    const TableModel = useContext(TableContext);
+
+   const isBeginning = TableModel.stage === 'setup';
+   const canSwitchPlayers = !['ready-for-showdown', 'showdown'].includes(TableModel.stage);
+   const canSubmitCards = TableModel.stage === 'ready-for-showdown';
+   const canNextRound = TableModel.stage === 'showdown';
 
    return (
       <div className='controls'>
-         {/* // TODO: create a Button component */}
-         {TableModel.roundIndex === 0 && (
+         {isBeginning && (
             <button className='btn' onClick={startGame}>
-               Start Game
+               {`${isBeginning && TableModel.roundIndex === 0 ? 'Start Game' : 'Deal'}`}
             </button>
          )}
-         <button
-            className='btn'
-            disabled={['ready-for-showdown', 'showdown'].includes(TableModel.stage)}
-            onClick={() => changePlayer(-1)}
-         >
-            Previous Player
-         </button>
-         <button
-            className='btn'
-            disabled={['ready-for-showdown', 'showdown'].includes(TableModel.stage)}
-            onClick={() => changePlayer(1)}
-         >
-            Next Player
-         </button>
-         <button
-            className='btn'
-            onClick={submitCards}
-            disabled={TableModel.stage !== 'ready-for-showdown'}
-         >
-            SHOWDOWN
-         </button>
+         {canSwitchPlayers && (
+            <button className='btn' onClick={() => changePlayer(-1)}>
+               Previous Player
+            </button>
+         )}
+         {canSwitchPlayers && (
+            <button className='btn' onClick={() => changePlayer(1)}>
+               Next Player
+            </button>
+         )}
+         {canSubmitCards && (
+            <button
+               className='btn'
+               onClick={submitCards}
+               disabled={TableModel.stage !== 'ready-for-showdown'}
+            >
+               SHOWDOWN
+            </button>
+         )}
+         {canNextRound && (
+            <button className='btn' onClick={nextRound} disabled={TableModel.stage !== 'showdown'}>
+               Next Round
+            </button>
+         )}
       </div>
    );
 };
