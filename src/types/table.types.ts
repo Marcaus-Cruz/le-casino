@@ -8,8 +8,8 @@ export const GAME_TYPES: Record<string, GameType> = Object.freeze({
    blackjack: 'blackjack',
    roulette: 'roulette',
    slots: 'slots',
-   texasHoldEm: 'texas-hold-em',
-   omaha: 'omaha',
+   // texasHoldEm: 'texas-hold-em',
+   // omaha: 'omaha',
 });
 
 export type GamePhase = 'setup' | 'betting' | 'discarding' | 'ready-for-showdown' | 'showdown';
