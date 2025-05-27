@@ -232,7 +232,12 @@ class TableModel {
       currentPlayer.role = 'regular'; // reset role, even if it will be overwritten
 
       ['dealer', 'big-blind', 'small-blind'].forEach(role => {
-         currentPlayer.leftNeighbor.role = role;
+         if (!currentPlayer.leftNeighbor) {
+            console.error('No left neighbor found for player', currentPlayer);
+            return;
+         }
+
+         currentPlayer.leftNeighbor.role = role as PlayerRoles;
          currentPlayer = currentPlayer.leftNeighbor;
       });
    }
